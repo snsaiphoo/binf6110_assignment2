@@ -2,6 +2,9 @@
 raw_data/
 salmon_output/
 
+# Software containers
+*.sif
+
 # Raw sequencing data
 *.fastq
 *.fastq.gz
