@@ -1,0 +1,19 @@
+# Directories
+raw_data/
+salmon_output/
+
+# Raw sequencing data
+*.fastq
+*.fastq.gz
+*.sra
+
+# Reference files
+*.fa
+*.fasta
+*.fna
+
+# RStudio
+.Rhistory
+.RData
+.Rproj.user/
+.DS_Store
