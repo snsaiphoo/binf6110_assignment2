@@ -1,6 +1,7 @@
 # Directories
 raw_data/
 salmon_output/
+containers/
 
 # Software containers
 *.sif
