@@ -1,5 +1,6 @@
 # Directories
 raw_data/
+salmon_index/
 salmon_output/
 containers/
 
