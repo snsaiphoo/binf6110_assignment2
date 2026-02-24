@@ -71,36 +71,228 @@ dds <- dds[rowSums(counts(dds)) > 10, ]
 
 dim(dds)
 
+# dds <- DESeq(dds)
+# 
+# resultsNames(dds)
+# 
+# #Generate a results table for each stage
+# res_2_vs_1 <- results(dds,
+#                       contrast = c("condition",
+#                                    "Stage_2",
+#                                    "Stage_1"))
+# res_3_vs_1 <- results(dds,
+#                       contrast = c("condition",
+#                                    "Stage_3",
+#                                    "Stage_1"))
+# res_3_vs_2 <- results(dds,
+#                       contrast = c("condition",
+#                                    "Stage_3",
+#                                    "Stage_2"))
+# 
+# 
+# # PCA 
+# vsd <- vst(dds)
+# 
+# pca_data <- plotPCA(vsd, intgroup = "condition", returnData = TRUE)
+# percentVar <- round(100 * attr(pca_data, "percentVar"))
+# 
+# library(ggplot2)
+# 
+# ggplot(pca_data, aes(PC1, PC2, color = condition)) +
+#   geom_point(size = 4) +
+#   xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+#   ylab(paste0("PC2: ", percentVar[2], "% variance")) +
+#   ggtitle("PCA Plot of Samples") +
+#   theme_minimal()
+# 
+# # MA Plot
+# library(apeglm)
+# 
+# resLFC_3_vs_1 <- lfcShrink(dds,
+#                            contrast = c("condition","Stage_3","Stage_1"),
+#                            type = "apeglm")
+# 
+# plotMA(resLFC_3_vs_1, ylim = c(-5,5),
+#        main = "Shrunken MA Plot: Stage 3 vs Stage 1")
+# 
+# resLFC_2_vs_1 <- lfcShrink(dds,
+#                            contrast = c("condition","Stage_2","Stage_1"),
+#                            type = "apeglm")
+# 
+# plotMA(resLFC_2_vs_1, ylim = c(-5,5),
+#        main = "Shrunken MA Plot: Stage 2 vs Stage 1")
+# 
+# 
+# resLFC_3_vs_2 <- lfcShrink(dds,
+#                            contrast = c("condition","Stage_3","Stage_2"),
+#                            type = "apeglm")
+# 
+# plotMA(resLFC_3_vs_2, ylim = c(-5,5),
+#        main = "Shrunken MA Plot: Stage 3 vs Stage 2")
+# 
+# # Volcano Plot
+# res_df <- as.data.frame(resLFC_3_vs_1)
+# res_df$gene <- rownames(res_df)
+# 
+# res_df$significant <- ifelse(res_df$padj < 0.05 &
+#                                abs(res_df$log2FoldChange) > 1,
+#                              ifelse(res_df$log2FoldChange > 0,
+#                                     "Up","Down"),
+#                              "Not Sig")
+# 
+# res_df <- na.omit(res_df)
+# 
+# ggplot(res_df,
+#        aes(x = log2FoldChange,
+#            y = -log10(padj),
+#            color = significant)) +
+#   geom_point(alpha = 0.6) +
+#   scale_color_manual(values = c("Down"="blue",
+#                                 "Not Sig"="gray",
+#                                 "Up"="red")) +
+#   labs(title = "Volcano Plot: Stage 3 vs Stage 1",
+#        x = "Log2 Fold Change",
+#        y = "-Log10 Adjusted P-value") +
+#   theme_minimal()
+# 
+# res_df <- as.data.frame(resLFC_3_vs_2)
+# res_df$gene <- rownames(res_df)
+# 
+# res_df$significant <- ifelse(res_df$padj < 0.05 &
+#                                abs(res_df$log2FoldChange) > 1,
+#                              ifelse(res_df$log2FoldChange > 0,
+#                                     "Up","Down"),
+#                              "Not Sig")
+# 
+# res_df <- na.omit(res_df)
+# 
+# ggplot(res_df,
+#        aes(x = log2FoldChange,
+#            y = -log10(padj),
+#            color = significant)) +
+#   geom_point(alpha = 0.6) +
+#   scale_color_manual(values = c("Down"="blue",
+#                                 "Not Sig"="gray",
+#                                 "Up"="red")) +
+#   labs(title = "Volcano Plot: Stage 3 vs Stage 1",
+#        x = "Log2 Fold Change",
+#        y = "-Log10 Adjusted P-value") +
+#   theme_minimal()
+# 
+# dim(dds)
+# resultsNames(dds)
+# summary(res_3_vs_1)
+
 dds <- DESeq(dds)
-
-resultsNames(dds)
-
-#Generate a results table for each stage
-res_2_vs_1 <- results(dds,
-                      contrast = c("condition",
-                                   "Stage_2",
-                                   "Stage_1"))
-res_3_vs_1 <- results(dds,
-                      contrast = c("condition",
-                                   "Stage_3",
-                                   "Stage_1"))
-res_3_vs_2 <- results(dds,
-                      contrast = c("condition",
-                                   "Stage_3",
-                                   "Stage_2"))
-
 vsd <- vst(dds)
-plotPCA(vsd, intgroup = "condition")
 
+comparisons <- list(
+  list(type="coef", name="condition_Stage_2_vs_Stage_1"),
+  list(type="coef", name="condition_Stage_3_vs_Stage_1"),
+  list(type="contrast", name=c("condition","Stage_3","Stage_2"))
+)
 
-subset(res_2_vs_1, padj<.05)
-plotMA(res_2_vs_1, ylim = c(-5,5))
-plotMA(res_3_vs_1, ylim = c(-5,5))
+# PCA Plots
+pca_data <- plotPCA(vsd, intgroup = "condition", returnData = TRUE)
+percentVar <- round(100 * attr(pca_data, "percentVar"))
 
-dim(dds)
-resultsNames(dds)
-summary(res_3_vs_1)
+library(ggplot2)
 
+ggplot(pca_data, aes(PC1, PC2, color = condition)) +
+  geom_point(size = 4) +
+  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+  ylab(paste0("PC2: ", percentVar[2], "% variance")) +
+  ggtitle("PCA Plot of Samples") +
+  theme_minimal()
+
+# Visualizations
+library(apeglm)
+library(pheatmap)
+library(ggplot2)
+
+for (comp in comparisons) {
+  
+  if (comp$type == "coef") {
+    
+    cat("\nProcessing:", comp$name, "\n")
+    
+    resLFC <- lfcShrink(dds,
+                        coef = comp$name,
+                        type = "apeglm")
+    
+    plot_title <- comp$name
+    
+  } else {
+    
+    cat("\nProcessing: Stage_3 vs Stage_2\n")
+    
+    resLFC <- results(dds,
+                      contrast = comp$name)
+    
+    plot_title <- "Stage_3_vs_Stage_2"
+  }
+  
+  # ----------------
+  # MA Plot
+  # ----------------
+  plotMA(resLFC,
+         ylim = c(-5,5),
+         main = paste("MA Plot:", plot_title))
+  
+  # ----------------
+  # Volcano Plot
+  # ----------------
+  res_df <- as.data.frame(resLFC)
+  res_df$gene <- rownames(res_df)
+  
+  res_df$significant <- ifelse(res_df$padj < 0.05 &
+                                 abs(res_df$log2FoldChange) > 1,
+                               ifelse(res_df$log2FoldChange > 0,
+                                      "Up","Down"),
+                               "Not Sig")
+  
+  res_df <- na.omit(res_df)
+  
+  print(
+    ggplot(res_df,
+           aes(log2FoldChange,
+               -log10(padj),
+               color = significant)) +
+      geom_point(alpha = 0.6) +
+      scale_color_manual(values = c("Down"="blue",
+                                    "Not Sig"="gray",
+                                    "Up"="red")) +
+      labs(title = paste("Volcano Plot:", plot_title),
+           x = "Log2 Fold Change",
+           y = "-Log10 Adjusted P-value") +
+      theme_minimal()
+  )
+  
+  # ----------------
+  # Heatmap (Top 20)
+  # ----------------
+  res_clean <- na.omit(resLFC)
+  top_genes <- head(order(res_clean$padj), 20)
+  gene_names <- rownames(res_clean)[top_genes]
+  
+  mat <- assay(vsd)[gene_names, ]
+  
+  annotation_df <- data.frame(Stage = sample_table$condition)
+  rownames(annotation_df) <- rownames(sample_table)
+  
+  pheatmap(mat,
+           scale = "row",
+           cluster_rows = TRUE,
+           cluster_cols = TRUE,
+           annotation_col = annotation_df,
+           show_rownames = TRUE,
+           show_colnames = FALSE,
+           main = paste("Top 20 DE Genes:", plot_title))
+}
+
+# Differential Counts
+cat("Significant genes:",
+    sum(resLFC$padj < 0.05, na.rm=TRUE), "\n")
 
 
 
