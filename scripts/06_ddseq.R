@@ -3,18 +3,29 @@ library(DESeq2)
 library(readr)
 library(dplyr)
 library(here)
-
+library(tidyverse)
 #BiocManager::install(c("tximport","DESeq2"))
 #BiocManager::install("GenomicFeatures")
+#BiocManager::install("DEGreport")
 library(GenomicFeatures)
+library(DEGreport)
 
 salmon_dir <- here("salmon_output")
 salmon_dir
 
+# sample_table <- data.frame(
+#   sample = c("SRR10551657","SRR10551658","SRR10551659",
+#              "SRR10551660","SRR10551661","SRR10551662",
+#              "SRR10551663","SRR10551664","SRR10551665"),
+#   condition = c("Stage_3","Stage_3","Stage_3",
+#                 "Stage_2","Stage_2","Stage_2",
+#                 "Stage_1","Stage_1","Stage_1")
+# )
+
 sample_table <- data.frame(
-  sample = c("SRR10551657","SRR10551658","SRR10551659",
-             "SRR10551660","SRR10551661","SRR10551662",
-             "SRR10551663","SRR10551664","SRR10551665"),
+  sample = c("SRR10551659","SRR10551658","SRR10551657",
+             "SRR10551662","SRR10551661","SRR10551660",
+             "SRR10551665","SRR10551664","SRR10551663"),
   condition = c("Stage_3","Stage_3","Stage_3",
                 "Stage_2","Stage_2","Stage_2",
                 "Stage_1","Stage_1","Stage_1")
@@ -59,6 +70,7 @@ txi <- tximport(files,
 
 dim(txi$counts)
 
+
 # Creating the DESeq2 dataset
 
 dds <- DESeqDataSetFromTximport(
@@ -66,6 +78,48 @@ dds <- DESeqDataSetFromTximport(
   colData = sample_table,
   design = ~ condition
 )
+
+# LRT
+
+# Likelihood ratio test
+dds_lrt <- DESeq(dds, test="LRT", reduced = ~ 1)
+
+res_LRT <- results(dds_lrt)
+
+# Create a tibble for LRT results
+res_LRT_tb <- res_LRT %>%
+  data.frame() %>%
+  rownames_to_column(var="gene") %>% 
+  as_tibble()
+
+# Subset to return genes with padj < 0.05
+sigLRT_genes <- res_LRT_tb %>% 
+  filter(padj < 0.05)
+
+# Get number of significant genes
+nrow(sigLRT_genes)
+
+# Subset results for faster cluster finding (for classroom demo purposes)
+clustering_sig_genes <- sigLRT_genes %>%
+  arrange(padj) %>%
+  head(n=1000)
+
+vsd <- vst(dds, blind = FALSE)
+rld_mat <- assay(vsd)
+
+# Obtain rlog values for those significant genes
+cluster_rlog <- rld_mat[clustering_sig_genes$gene, ]
+
+meta <- colData(dds) %>%
+  as.data.frame()
+
+head(meta)
+
+# Use the `degPatterns` function from the 'DEGreport' package to show gene clusters across sample groups
+clusters <- degPatterns(cluster_rlog, metadata = meta, time = "condition", col=NULL)
+
+
+# Wald Test
 
 dds <- dds[rowSums(counts(dds)) > 10, ]
 
