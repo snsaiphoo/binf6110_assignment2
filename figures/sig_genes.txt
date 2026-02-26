@@ -10,3 +10,12 @@ Significant genes in Stage_3 vs Stage_2 : 2394
 Significant genes in Stage_2 vs Stage_1 : 2226 
 Significant genes in Stage_3 vs Stage_1 : 3015 
 Significant genes in Stage_3 vs Stage_2 : 2394 
+Significant genes in Stage_2 vs Stage_1 : 2226 
+Significant genes in Stage_3 vs Stage_1 : 3015 
+Significant genes in Stage_3 vs Stage_2 : 2394 
+Significant genes in Stage_2 vs Stage_1 : 2226 
+Significant genes in Stage_3 vs Stage_1 : 3015 
+Significant genes in Stage_3 vs Stage_2 : 2394 
+Significant genes in Stage_2 vs Stage_1 : 2226 
+Significant genes in Stage_3 vs Stage_1 : 3015 
+Significant genes in Stage_3 vs Stage_2 : 2394 

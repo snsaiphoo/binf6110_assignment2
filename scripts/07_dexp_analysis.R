@@ -2,6 +2,8 @@
 # generate PCA, MA, volcano plots, and heatmaps.
 
 library(DESeq2)
+library(org.Sc.sgd.db)
+library(AnnotationDbi)
 library(tidyverse)
 library(here)
 library(DEGreport)
@@ -194,8 +196,24 @@ for (comp in comparisons) {
   # Select top 20 genes by adjusted p-value
   top_genes <- rownames(res_no_na)[order(res_no_na$padj)][1:15]
   
+  # Map ORF (locus) to gene symbol
+  gene_symbols <- mapIds(org.Sc.sgd.db,
+                         keys = top_genes,
+                         column = "GENENAME",
+                         keytype = "ORF",
+                         multiVals = "first")
+  
+  # Replace NA symbols with locus if missing
+  gene_symbols[is.na(gene_symbols)] <- top_genes[is.na(gene_symbols)]
+  
+  # Create combined label: Locus_Gene 
+  heatmap_labels <- paste0(top_genes, "_", gene_symbols)
+  
   # Subset transformed matrix
   mat <- vsd_mat[top_genes, ]
+  
+  # Replace rownames in matrix
+  rownames(mat) <- heatmap_labels
   
   # Optional: ensure annotation rownames match colnames
   annotation_df <- as.data.frame(colData(dds))
