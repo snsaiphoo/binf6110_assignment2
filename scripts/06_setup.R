@@ -8,6 +8,12 @@ library(tidyverse)
 library(here)
 library(GenomicFeatures)
 
+# Create results directory if it doesn't exist
+results_dir <- here("results")
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
 # Define directory for the quant files 
 salmon_dir <- here("salmon_output")
 
@@ -77,4 +83,4 @@ dds <- DESeqDataSetFromTximport(
 )
 
 # Save DESeq2 object for downstream analysis
-saveRDS(dds, file = here("dds_object.rds"))
+saveRDS(dds, file = file.path(results_dir, "dds_object.rds"))

@@ -8,12 +8,15 @@ library(DEGreport)
 library(apeglm)
 library(pheatmap)
 
-# Create results directory if it doesn't exist
+# Load location of results directory
 results_dir <- here("results")
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
-}
 
+# Create folder for figures, and define location
+figures_dir <- here("figures")
+if (!dir.exists(figures_dir)) {
+  dir.create(figures_dir)
+}
+                    
 # Load DESeq2 dataset
 dds <- readRDS(here("dds_object.rds"))
 
@@ -61,11 +64,17 @@ cluster_rlog <- rld_mat[clustering_sig_genes$gene, ]
 
 meta <- as.data.frame(colData(dds))
 
+png(file.path(figures_dir, "LRT.png"),
+    width = 1000,
+    height = 800,
+    res = 150)
+
 clusters <- degPatterns(cluster_rlog,
                         metadata = meta,
                         time = "condition",
                         col = NULL)
 
+dev.off()
 
 ############# Wald Tests #############
 
@@ -78,12 +87,18 @@ comparisons <- list(
 # PCA Plots
 pca_data <- plotPCA(vsd, intgroup = "condition", returnData = TRUE)
 
-ggplot(pca_data, aes(PC1, PC2, color = condition)) +
+pca <- ggplot(pca_data, aes(PC1, PC2, color = condition)) +
   geom_point(size = 4) +
   xlab("PC1") +
   ylab("PC2") +
   ggtitle("PCA Plot of Samples") +
   theme_minimal()
+
+ggsave(filename = file.path(figures_dir, "PCA_plot.png"),
+       plot = pca,
+       width = 8,
+       height = 6 
+       )
 
 # Visualizations
 for (comp in comparisons) {
@@ -107,9 +122,17 @@ for (comp in comparisons) {
   }
   
   # MA Plot
+  
+  png(file.path(figures_dir, paste0("MA ", contrast_name, ".png")),
+      width = 1000,
+      height = 800,
+      res = 150)
+  
   plotMA(resLFC,
          ylim = c(-5,5),
          main = paste("MA Plot:", contrast_name))
+  
+  dev.off()
   
   # Volcano Plot
   res_df <- as.data.frame(resLFC)
@@ -139,9 +162,8 @@ for (comp in comparisons) {
                                "Not Sig")
   
   res_df <- na.omit(res_df)
-  
   print(
-    ggplot(res_df,
+    vp <- ggplot(res_df,
            aes(log2FoldChange,
                -log10(padj),
                color = significant)) +
@@ -151,12 +173,20 @@ for (comp in comparisons) {
                                     "Up"="red")) +
       labs(title = paste("Volcano Plot:", contrast_name),
            x = "Log2 Fold Change",
-           y = "-Log10 Adjusted P-value") +
-      theme_minimal()
+           y = "-Log10 Adjusted P-value") + theme_minimal()
+    )
+  
+  ggsave(
+    filename = file.path(figures_dir, paste0("Volcano_", contrast_name, ".png")),
+    plot = vp,
+    width = 8,
+    height = 6
   )
   
   cat("Significant genes in", contrast_name, ":",
-      sum(res_df$padj < 0.05, na.rm = TRUE), "\n")
+      sum(res_df$padj < 0.05, na.rm = TRUE), "\n",
+      file = file.path(figures_dir, "sig_genes.txt"),
+      append = TRUE)
 }
 
 
