@@ -22,3 +22,5 @@ containers/
 .DS_Store
 Assignment2.Rproj
 assignment_2 (1).pdf
+results/
+dds_object.rds
