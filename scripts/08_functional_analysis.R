@@ -14,8 +14,8 @@ figures_dir <- here("figures")
 # load in results directory
 results_dir <- here("results")
 
-
-#Load Wald results (Stage_3 vs Stage_1)
+# Load Wald results (Stage_3 vs Stage_1)
+# Repeat for each stage comparison
 res_df <- read.csv(
   here("results", "Wald_full_Stage_3_vs_Stage_1.csv")
 )
@@ -164,8 +164,10 @@ dotplot(compare_kegg, showCategory = 7) +
 
 dev.off()
 
-# GSEA (Ranked Gene List)
+# Repeat the same with the clusters from the LRT
 
+# GSEA (Ranked Gene List)
+# Repeat this with LRT CLusters 
 res_clean <- res_df
 
 # Remove genes with NA test statistics 

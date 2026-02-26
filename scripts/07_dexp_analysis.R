@@ -29,6 +29,9 @@ dds <- DESeq(dds)
 # Variance-stabilizing transformation (for visualization)
 vsd <- vst(dds, blind = FALSE)
 
+# Extract matrix
+vsd_mat <- assay(vsd)
+
 ########## Likelihood ratio test (LRT) ######################
 dds_lrt <- DESeq(dds, test = "LRT", reduced = ~ 1)
 
@@ -86,11 +89,12 @@ comparisons <- list(
 
 # PCA Plots
 pca_data <- plotPCA(vsd, intgroup = "condition", returnData = TRUE)
-
+# Get percent variance explained by the top two principal components
+percentVar <- round(100 * attr(pca_data, "percentVar"))
 pca <- ggplot(pca_data, aes(PC1, PC2, color = condition)) +
   geom_point(size = 4) +
-  xlab("PC1") +
-  ylab("PC2") +
+  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+  ylab(paste0("PC2: ", percentVar[2], "% variance")) +
   ggtitle("PCA Plot of Samples") +
   theme_minimal()
 
@@ -182,6 +186,38 @@ for (comp in comparisons) {
     width = 8,
     height = 6
   )
+  
+  # Heatmaps
+  # Remove NA padj values first
+  res_no_na <- resLFC[!is.na(resLFC$padj), ]
+  
+  # Select top 20 genes by adjusted p-value
+  top_genes <- rownames(res_no_na)[order(res_no_na$padj)][1:15]
+  
+  # Subset transformed matrix
+  mat <- vsd_mat[top_genes, ]
+  
+  # Optional: ensure annotation rownames match colnames
+  annotation_df <- as.data.frame(colData(dds))
+  
+  # Save heatmap
+  png(file.path(figures_dir,
+                paste0("Heatmap_", gsub(" ", "_", contrast_name), ".png")),
+      width = 1000,
+      height = 1000,
+      res = 150)
+  
+  pheatmap(mat,
+           scale = "row",
+           cluster_rows = TRUE,
+           cluster_cols = TRUE,
+           annotation_col = annotation_df,
+           show_rownames = TRUE,
+           show_colnames = FALSE,
+           main = paste("Top 20 DE Genes:", contrast_name)
+  )
+  
+  dev.off()
   
   cat("Significant genes in", contrast_name, ":",
       sum(res_df$padj < 0.05, na.rm = TRUE), "\n",
