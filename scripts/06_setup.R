@@ -55,7 +55,7 @@ txdb <- makeTxDbFromGFF(gtf_file)
 k <- keys(txdb, keytype = "TXNAME")
 
 # Create transcript-to-gene mapping table
-tx2gene <- select(txdb,
+tx2gene <- AnnotationDbi::select(txdb,
                   keys = k,
                   columns = "GENEID",
                   keytype = "TXNAME")

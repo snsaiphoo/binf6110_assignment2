@@ -142,6 +142,7 @@ for (comp in comparisons) {
   
   # Volcano Plot
   res_df <- as.data.frame(resLFC)
+  res_df$gene <- rownames(res_df)
   
   # Save full Wald results
   write.csv(res_df,
