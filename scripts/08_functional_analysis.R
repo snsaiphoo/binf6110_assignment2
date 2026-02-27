@@ -54,43 +54,6 @@ all_genes <- res_df %>%
   na.omit() %>%
   unique()
 
-# # GO Enrichment 
-# ego_bp <- enrichGO(gene = sig_genes,
-#                    universe = all_genes,
-#                    OrgDb = org.Sc.sgd.db,
-#                    ont = "BP",
-#                    keyType = "ORF",
-#                    pAdjustMethod = "BH",
-#                    pvalueCutoff = 0.05,
-#                    qvalueCutoff = 0.2,
-#                    readable = FALSE)
-
-# png(file.path(figures_dir, "GOenrich_DP.png"),
-#     width = 1000,
-#     height = 800,
-#     res = 150)
-# 
-# dotplot(ego_bp, showCategory = 20,
-#         title = "GO Biological Process - Stage 3 vs Stage 1")
-# 
-# dev.off()
-
-# KEGG analysis
-# kegg_enrich <- enrichKEGG(gene = sig_genes,
-#                           organism = 'sce',
-#                           pvalueCutoff = 0.05,
-#                           qvalueCutoff = 0.2)
-
-# png(file.path(figures_dir, "KEGGenrich_DP.png"),
-#     width = 1000,
-#     height = 800,
-#     res = 150)
-# 
-# dotplot(kegg_enrich, showCategory = 15,
-#         title = "KEGG Pathway Enrichment - Stage 3 vs Stage 1")
-# 
-# dev.off()
-
 # Comparing Upregulated and Downregulated Genes
 gene_sets <- list(
   Upregulated = res_df %>%
