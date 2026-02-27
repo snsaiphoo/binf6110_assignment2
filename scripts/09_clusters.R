@@ -9,6 +9,8 @@ library(here)
 library(DEGreport)
 library(apeglm)
 library(pheatmap)
+library(enrichplot)
+library(clusterProfiler)
 
 
 # Load location of results directory
@@ -71,9 +73,9 @@ cluster_assignments <- clusters$df %>%
 
 unique_clusters <- unique(cluster_assignments$cluster)
 
+# Heatmaps
+
 for (cl in unique_clusters) {
-  
-  message("Processing Cluster: ", cl)
   
   # Get genes in this cluster
   cluster_genes <- cluster_assignments %>%
@@ -106,256 +108,181 @@ for (cl in unique_clusters) {
   dev.off()
 }
 
-res_wald <- read.csv(
-  here("results", "Wald_full_Stage_3_vs_Stage_1.csv"),
-)
-
-res_wald$ORF <- res_wald$gene
-
-for (cl in unique_clusters) {
-  
-  message("Volcano for Cluster: ", cl)
-  
-  cluster_genes <- cluster_assignments %>%
-    filter(cluster == cl) %>%
-    pull(genes)
-  
-  # Fix dot → dash
-  cluster_genes <- gsub("\\.", "-", cluster_genes)
-  
-  # Keep only genes that exist in Wald results
-  cluster_genes <- intersect(cluster_genes, res_wald$ORF)
-  
-  if (length(cluster_genes) == 0) next
-  
-  # Create volcano dataframe
-  volcano_df <- res_wald %>%
-    filter(!is.na(padj))
-  
-  volcano_df$cluster_member <- ifelse(
-    volcano_df$ORF %in% cluster_genes,
-    paste0("Cluster_", cl),
-    "Other"
-  )
-  
-  p <- ggplot(volcano_df,
-              aes(log2FoldChange,
-                  -log10(padj),
-                  color = cluster_member)) +
-    geom_point(alpha = 0.6) +
-    theme_minimal() +
-    labs(title = paste("Volcano Plot - LRT Cluster", cl),
-         x = "Log2 Fold Change",
-         y = "-Log10 Adjusted P-value")
-  
-  ggsave(
-    filename = file.path(figures_dir,
-                         paste0("Volcano_LRT_cluster_", cl, ".png")),
-    plot = p,
-    width = 8,
-    height = 6
-  )
-}
-
 ## Functional Analysis 
 
-library(clusterProfiler)
-library(org.Sc.sgd.db)
-library(enrichplot)
+cluster1_genes <- cluster_assignments$genes[cluster_assignments$cluster == 1]
+cluster2_genes <- cluster_assignments$genes[cluster_assignments$cluster == 2]
+cluster3_genes <- cluster_assignments$genes[cluster_assignments$cluster == 3]
+cluster4_genes <- cluster_assignments$genes[cluster_assignments$cluster == 4]
 
-for (cl in unique_clusters) {
+# GO Enrichment
+for (i in 1:4) {
   
-  message("GO enrichment for Cluster: ", cl)
+  go_obj <- get(paste0("cluster", i,"_genes"))
   
-  # Get cluster genes
-  cluster_genes <- cluster_assignments %>%
-    filter(cluster == cl) %>%
-    pull(genes)
-  
-  # Fix dot to dash
-  cluster_genes <- gsub("\\.", "-", cluster_genes)
-  
-  # Keep only genes present in Wald results
-  cluster_genes <- intersect(cluster_genes, res_wald$ORF)
+  # Fix dot to dash if needed
+  cluster_genes <- gsub("\\.", "-", go_obj)
   
   if (length(cluster_genes) < 5) {
-    message("Cluster ", cl, " has too few genes — skipping")
+    message("Cluster ", i, " has too few genes — skipping")
     next
   }
   
-  # Subset Wald results to cluster genes
-  cluster_res <- res_wald %>%
-    filter(ORF %in% cluster_genes)
-  
-  # Define Up and Down genes
-  gene_sets <- list(
-    Upregulated = cluster_res %>%
-      filter(padj < 0.05 & log2FoldChange > 1) %>%
-      pull(ORF) %>%
-      na.omit() %>%
-      unique(),
-    
-    Downregulated = cluster_res %>%
-      filter(padj < 0.05 & log2FoldChange < -1) %>%
-      pull(ORF) %>%
-      na.omit() %>%
-      unique()
-  )
-  
-  # Skip if no significant genes
-  if (length(gene_sets$Upregulated) == 0 &&
-      length(gene_sets$Downregulated) == 0) {
-    message("No significant genes in Cluster ", cl)
-    next
-  }
-  
-  # GO Enrichment
-  compare_go <- compareCluster(
-    geneCluster = gene_sets,
-    fun = "enrichGO",
-    OrgDb = org.Sc.sgd.db,
-    keyType = "ORF",
-    ont = "BP",
+  # Run GO enrichment
+  go_res <- enrichGO(
+    gene          = cluster_genes,
+    OrgDb         = org.Sc.sgd.db,
+    keyType       = "ORF",
+    ont           = "BP",
     pAdjustMethod = "BH",
-    pvalueCutoff = 0.05,
-    qvalueCutoff = 0.2
+    pvalueCutoff  = 0.05,
+    qvalueCutoff  = 0.2
   )
-  
-  # If no enrichment found, skip
-  if (is.null(compare_go) || nrow(as.data.frame(compare_go)) == 0) {
-    message("No GO enrichment for Cluster ", cl)
+
+  # Skip if no enrichment
+  if (nrow(as.data.frame(go_res)) == 0) {
     next
   }
   
   # Save plot
   png(file.path(figures_dir,
-                paste0("GOenrich_LRT_cluster_", cl, ".png")),
+                paste0("GOenrich_LRT_cluster_", i, ".png")),
       width = 1000,
       height = 800,
       res = 150)
   
   print(
-    dotplot(compare_go, showCategory = 10) +
-      labs(title = paste("GO BP Enrichment - LRT Cluster", cl))
-  )
+  dotplot(go_res) +
+      labs(title = paste("GO BP Enrichment - LRT Cluster", i)))
   
   dev.off()
-  
-  # Save table
-  write.csv(as.data.frame(compare_go),
-            file = file.path(results_dir,
-                             paste0("GO_LRT_cluster_", cl, ".csv")),
-            row.names = FALSE)
 }
 
-########## KEGG GSEA FOR LRT CLUSTERS ######################
+## KEGG LRT CLUSTERS #####
 
-library(clusterProfiler)
-library(org.Sc.sgd.db)
-library(enrichplot)
-library(dplyr)
-library(here)
-
-# Load Wald results (choose which contrast to rank by)
-res_wald <- read.csv(
-  here("results", "Wald_full_Stage_3_vs_Stage_1.csv")
+kegg_cluster1 <- enrichKEGG(
+  gene         = cluster1_genes,
+  organism     = "sce",
+  pvalueCutoff = 0.05
 )
 
-# Keep gene + stat only
-res_wald <- res_wald %>%
-  dplyr::select(gene, log2FoldChange)
+kegg_cluster2 <- enrichKEGG(
+  gene         = cluster2_genes,
+  organism     = "sce",
+  pvalueCutoff = 0.05
+)
 
-# Remove NA stats
-res_wald <- res_wald[!is.na(res_wald$log2FoldChange), ]
+kegg_cluster3 <- enrichKEGG(
+  gene         = cluster3_genes,
+  organism     = "sce",
+  pvalueCutoff = 0.05
+)
 
-# Map ORF -> ENTREZ (KEGG requires ENTREZ IDs)
-gene_map <- bitr(res_wald$gene,
-                 fromType = "ORF",
-                 toType = "ENTREZID",
-                 OrgDb = org.Sc.sgd.db)
+kegg_cluster4 <- enrichKEGG(
+  gene         = cluster4_genes,
+  organism     = "sce",
+  pvalueCutoff = 0.05
+)
 
-# Merge mapping
-res_wald <- merge(res_wald,
-                  gene_map,
-                  by.x = "gene",
-                  by.y = "ORF")
-
-# Get unique clusters
-unique_clusters <- unique(cluster_assignments$cluster)
-
-for (cl in unique_clusters) {
+for (i in 1:4) {
   
-  message("Running KEGG GSEA for Cluster: ", cl)
+  kegg_obj <- get(paste0("kegg_cluster", i))
   
-  # Get genes in this cluster
-  cluster_genes <- cluster_assignments %>%
-    filter(cluster == cl) %>%
-    pull(genes)
-  
-  # Subset to cluster genes
-  cluster_res <- res_wald %>%
-    filter(gene %in% cluster_genes)
-  
-  # Skip if too few genes
-  if (nrow(cluster_res) < 10) {
-    message("Cluster ", cl, " has too few genes for GSEA")
+  # If no enrichment found, skip
+  if (is.null(kegg_obj) || nrow(as.data.frame(kegg_obj)) == 0) {
     next
   }
   
-  # Create ranked vector (ENTREZ IDs required)
-  gene_list <- cluster_res$log2FoldChange
-  names(gene_list) <- cluster_res$ENTREZID
-  
-  # Remove missing ENTREZ
-  gene_list <- gene_list[!is.na(names(gene_list))]
-  
-  # Sort decreasing (important!)
-  gene_list <- sort(gene_list, decreasing = TRUE)
-  
-  # Run KEGG GSEA
-  gsea_kegg <- gseKEGG(
-    geneList = gene_list,
-    organism = "sce",
-    pvalueCutoff = 0.1,
-    minGSSize = 5,
-    verbose = FALSE
-  )
-  
-  # If no enrichment found
-  if (is.null(gsea_kegg) ||
-      nrow(as.data.frame(gsea_kegg)) == 0) {
-    
-    message("No KEGG GSEA enrichment for Cluster ", cl)
-    next
-  }
-  
-  # Save results
-  write.csv(as.data.frame(gsea_kegg),
-            file = file.path(results_dir,
-                             paste0("LRT_GSEA_KEGG_cluster_", cl, ".csv")),
-            row.names = FALSE)
-  
-  # Dotplot
-  png(file.path(figures_dir,
-                paste0("LRT_GSEA_KEGG_cluster_", cl, ".png")),
+  png(file.path(figures_dir, paste0("KEGGenrich_LRT_cluster", i, ".png")),
       width = 1000,
       height = 800,
       res = 150)
   
-  print(dotplot(gsea_kegg,
-                showCategory = 10,
-                title = paste("KEGG GSEA - LRT Cluster", cl)))
+  print(dotplot(kegg_obj))
   
   dev.off()
-  
-  # Enrichment plot of first pathway
-  p <- gseaplot2(gsea_kegg, geneSetID = 1)
-  
-  ggsave(
-    filename = file.path(figures_dir,
-                         paste0("LRT_GSEA_KEGG_cluster_", cl, "_geneSet1.png")),
-    plot = p,
-    width = 8,
-    height = 6
-  )
 }
+
+########## GO GSEA FOR LRT CLUSTERS ######################
+
+# Use LRT results object
+gene_list <- res_LRT$stat
+names(gene_list) <- rownames(res_LRT)  
+
+# Remove NA
+gene_list <- gene_list[!is.na(gene_list)]
+
+# Sort decreasing
+gene_list <- sort(gene_list, decreasing = TRUE)
+
+gsea_go <- gseGO(
+  geneList      = gene_list,
+  OrgDb         = org.Sc.sgd.db,
+  keyType       = "ORF",
+  ont           = "BP",
+  minGSSize     = 10,
+  pvalueCutoff  = 0.05,
+  verbose       = FALSE
+)
+
+png(file.path(figures_dir, "GSEA_GO_LRT.png"),
+    width = 1200,
+    height = 900,
+    res = 150)
+
+print(dotplot(gsea_go, showCategory = 15))
+
+dev.off()
+
+png(file.path(figures_dir, "GSEA_GO_LRT_top_pathway.png"),
+    width = 1200,
+    height = 900,
+    res = 150)
+
+print(
+  gseaplot2(
+    gsea_go,
+    geneSetID = 1,
+    title = gsea_go@result$Description[1]
+  )
+)
+
+dev.off()
+
+
+### KEGG GSEA for LRT-ranked gene list ####
+
+gene_list <- res_LRT$stat
+names(gene_list) <- rownames(res_LRT)   # OR res_lrt$ORF
+gene_list <- gene_list[!is.na(gene_list)]
+gene_list <- sort(gene_list, decreasing = TRUE)
+
+gsea_kegg <- gseKEGG(
+  geneList      = gene_list,
+  organism      = "sce",
+  minGSSize     = 10,
+  pvalueCutoff  = 0.05,
+  verbose       = FALSE
+)
+
+png(file.path(figures_dir, "GSEA_KEGG_LRT_dotplot.png"),
+    width = 1200,
+    height = 900,
+    res = 150)
+
+dev.off()
+
+png(file.path(figures_dir, "GSEA_KEGG_LRT_top_pathway.png"),
+    width = 1200,
+    height = 900,
+    res = 150)
+
+print(
+  gseaplot2(
+    gsea_kegg,
+    geneSetID = 1,
+    title = gsea_kegg@result$Description[1]
+  ))
+
+
+dev.off()

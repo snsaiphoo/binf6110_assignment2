@@ -49,7 +49,7 @@ gtf_file <- here("data", "genomic.gtf")
 gtf_file
 
 # Create TxDb object from annotation
-txdb <- makeTxDbFromGFF(gtf_file)
+txdb <- makeTxDbFromGFF(gtf_file, organism = "Saccharomyces cerevisiae")
 
 # Extract transcript IDs
 k <- keys(txdb, keytype = "TXNAME")
