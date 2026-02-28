@@ -1,5 +1,5 @@
-# Perform differential expression analysis (LRT + Wald),
-# generate PCA, MA, volcano plots, and heatmaps.
+# Perform functional enrichment analysis for LRT Clusters
+# generate heatmaps and enrichment plots
 
 library(DESeq2)
 library(org.Sc.sgd.db)

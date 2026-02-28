@@ -1,5 +1,5 @@
 # Perform GO, KEGG enrichment (ORA) and GSEA
-# using Wald results (Stage_3 vs Stage_1)
+# using Wald results (Stage_3 vs Stage_1) adjust script for each condition
 
 library(clusterProfiler)
 library(enrichplot)
