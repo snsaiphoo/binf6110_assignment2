@@ -170,6 +170,21 @@ GSEA was performed using ranked gene lists rather than applying a strict signifi
 
 # Results
 ### FastQC 
+<div align="center">
+
+**Table 1.** Average sequencing quality metrics per developmental stage derived from FastQC reports. Complete quality control reports for all samples are available in the [`fastqc_reports`](fastqc_reports) directory.
+
+| Stage   | Avg. Total Reads | Read Length (bp) | Avg. %GC |
+|:--------|:----------------:|:----------------:|:--------:|
+| Stage 1 | 7,053,566 | 50 | 43% |
+| Stage 2 | 6,126,600 | 50 | 42% |
+| Stage 3 | 8,236,044 | 50 | 42% |
+
+</div>
+
+Raw sequencing reads from Stage 1 (Early), Stage 2 (Thin), and Stage 3 (Mature) samples were assessed using FastQC prior to downstream analysis. Average sequencing depth ranged from 6.1 to 8.2 million reads per sample, with a consistent read length of 50 bp (Table 1). No reads were flagged as poor quality.
+
+Per-base sequence quality passed for all samples, and no adapter contamination was detected. GC content was consistent across stages (42–43%) and between biological replicates. Although per-base sequence content and duplication levels were flagged in several samples, these patterns are commonly observed in RNA-seq data due to transcript abundance bias. Overall, sequencing quality was sufficient to proceed with alignment and differential expression analysis.
 
 ### Salmon Outputs
 
