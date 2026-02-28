@@ -214,6 +214,8 @@ The volcano plot comparing Stage 3 and Stage 1, shown in Figure 2, demonstrates 
 
 <div align="center">
 
+<div align="center">
+
 <table>
   <tr>
     <td align="center">
@@ -231,8 +233,14 @@ The volcano plot comparing Stage 3 and Stage 1, shown in Figure 2, demonstrates 
   </tr>
 </table>
 
+<br>
+
+<b>Figure 3.</b> Heatmaps of the top 15 differentially expressed genes identified in pairwise Wald test comparisons. Samples cluster by developmental stage, and opposing expression patterns (blue to red) are observed across stages, reflecting stage-specific transcriptional regulation during biofilm development.
+
 </div>
 
+</div>
+Heatmaps of the top 15 differentially expressed genes were generated for each pairwise comparison to further examine stage-specific expression patterns (Figures 3A–3C). Across all comparisons, biological replicates clustered by developmental stage, demonstrating consistent transcriptional profiles within conditions. Distinct opposing expression patterns were observed between stages, with genes upregulated in one stage often downregulated in another. For example, HXT17 exhibited clear stage-dependent regulation in the Stage 3 vs Stage 1 comparison (Figure 3C), transitioning from lower expression in Stage 1 (blue) to higher expression in Stage 3 (red). This shift in expression highlights coordinated transcriptional remodeling across developmental progression.
 
 #### LRT Visualization
 
