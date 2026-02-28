@@ -57,7 +57,7 @@ Eight threads were used to improve computational efficiency. The full code can b
 
 Transcript-level abundance estimation was performed using `Salmon` version 1.10.3 in quasi-mapping mode within a containerized environment [20].
 
-#### Transcript Index 
+#### 3.1 - Transcript Index 
 A transcriptome index was first generated from the _Saccharomyces cerevisiae S288C_ strain transcriptome (strain S288C). As mentioned, the FASTA file corresponding to the _S288C_ reference assembly was used for index construction:
 
 ```
@@ -68,7 +68,7 @@ apptainer exec containers/salmon.sif salmon index \
 ```
 A k-mer size of 31 was used for index construction. This value was selected based on recommendations provided in the `Salmon` documentation [20], which suggests k = 31 as an appropriate default for accurate quasi-mapping performance. The index was saved to the `salmon_index` directory and used for all downstream quantification steps. This folder is not shown in the repository. The full code can be seen in [`04_salmon.sh`](scripts/04_salmon.sh).
 
-#### Transcript Quantification 
+#### 3.2 - Transcript Quantification 
 Samples were automatically identified using SRR accession identifiers located within the raw_data/ directory (directory not shown in repository):
 
 ```
@@ -98,13 +98,13 @@ The quant.sf files generated in the previous step were imported into `RStudio` a
 
 All quant.sf files were stored in the [`salmon_output`](salmon_output) directory and linked to a sample metadata table describing the three velum developmental stages, with three biological replicates per stage. 
 
-#### Gene Mapping
+#### 4.1 - Gene Mapping
 
 To summarize transcript-level estimates to the gene level, a transcript-to-gene mapping table, tx2gene, was created using the _Saccharomyces cerevisiae S288C_ gene annotation file `genomic.gtf` [16].
 
 A `TxDb` object was generated using `makeTxDbFromGFF()` from the `GenomicFeatures` package [21], which allowed transcript IDs, TXNAME, to be matched to their corresponding `GENEID`. Minor naming inconsistencies were resolved by removing transcript version numbers to ensure compatibility.
 
-#### Creating the DESeq2 object
+#### 4.2 - Creating the DESeq2 object
 
 Gene-level counts were generated using `tximport()` with parameters appropriate for `Salmon` output, including `ignoreTxVersion = TRUE,` as recommended in the Bioconductor vignette [8].
 ```
@@ -128,7 +128,7 @@ The `DESeq2` object was saved for use in downstream differential expression and 
 ### 5.0 - Differential Gene Expression Analysis
 
 The previously constructed `DESeqDataSet` object was loaded and pre-filtered to remove low-count genes. This step reduces noise and improves statistical power. This design models how gene expression changes across the three developmental stages. For visualization purposes, a variance-stabilizing transformation (VST) was applied to normalized counts, `vsd`. The transformed data were used for PCA, clustering, and heatmap visualizations.
-The full code is available in [`07_setup.R`](scripts/07_setup.R).
+The full code is available in [`07_dexp_analysis.R`](scripts/07_dexp_analysis.R).
 
 #### 5.1 - DESeq2: Wald Test
 `DESeq2` implements the Wald Test to identify genes that are differentially expressed between specific developmental stages [10]. `DESeq2` models the RNA-Seq count data using a negative binomial framework and evaluates whether the estimated log2 fold change between two stages is significantly different from zero [10].
