@@ -9,6 +9,10 @@ cd containers
 
 module load apptainer
 
+# BLAST version 2.2.31
+singularity pull docker://biocontainers/blast:v2.2.31_cv2
+mv blast_v2.2.31_cv2.sif blast.sif
+
 # SRA Toolkit version 3.2.1
 singularity pull docker://quay.io/biocontainers/sra-tools:3.2.1--h4304569_1
 mv sra-tools_3.2.1--h4304569_1.sif sra-toolkit.sif
