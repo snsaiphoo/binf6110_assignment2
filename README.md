@@ -66,7 +66,7 @@ apptainer exec containers/salmon.sif salmon index \
    -i salmon_index \
    -k 31`
 ```
-A k-mer size of 31 was used for index construction. This value was selected based on recommendations provided in the `Salmon` documentation [20], which suggests k = 31 as an appropriate default for accurate quasi-mapping performance. The index was saved to the salmon_index/ directory and used for all downstream quantification steps. This folder is not shown in the repository. 
+A k-mer size of 31 was used for index construction. This value was selected based on recommendations provided in the `Salmon` documentation [20], which suggests k = 31 as an appropriate default for accurate quasi-mapping performance. The index was saved to the `salmon_index` directory and used for all downstream quantification steps. This folder is not shown in the repository. The full code can be seen in [`04_salmon.sh`](scripts/04_salmon.sh).
 
 #### Transcript Quantification 
 Samples were automatically identified using SRR accession identifiers located within the raw_data/ directory (directory not shown in repository):
@@ -88,13 +88,13 @@ do
 done
 ```
 
-Automatic library type detection, `-l A`, was enabled so `Salmon` could infer library orientation. The `--validateMappings` option was used to improve alignment specificity through selective alignment. All parameter choices were guided by recommendations in the `Salmon` documentation [20] to ensure an accurate transcript abundance estimation.
+Automatic library type detection, `-l A`, was enabled so `Salmon` could infer library orientation. The `--validateMappings` option was used to improve alignment specificity through selective alignment. All parameter choices were guided by recommendations in the `Salmon` documentation [20] to ensure an accurate transcript abundance estimation. The full code can be seen in [`05_salmon.sh`](scripts/05_salmon.sh).
 
 For each sample, `Salmon` generated a quant.sf file containing transcript-level estimated counts, which can be found in the respective folders of the [`salmon_output`](salmon_output) directory. These files were subsequently imported into R using `tximport` for downstream differential expression analysis.
 
 ### 4.0 - Importing quant files with tximport
 
-The quant.sf files generated in the previous step were imported into `RStudio` and summarized to gene-level counts using the `tximport` package [8]. This step converts transcript abundance estimates into gene-level counts, which are required for downstream differential expression analysis with DESeq2.
+The quant.sf files generated in the previous step were imported into `RStudio` and summarized to gene-level counts using the `tximport` package [8]. This step converts transcript abundance estimates into gene-level counts, which are required for downstream differential expression analysis with DESeq2. The full code can be seen in [`06_setup.R`](scripts/06_setup.R).
 
 All quant.sf files were stored in the [`salmon_output`](salmon_output) directory and linked to a sample metadata table describing the three velum developmental stages, with three biological replicates per stage. 
 
@@ -107,6 +107,12 @@ A `TxDb` object was generated using `makeTxDbFromGFF()` from the `GenomicFeature
 #### Creating the DESeq2 object
 
 Gene-level counts were generated using `tximport()` with parameters appropriate for `Salmon` output, including `ignoreTxVersion = TRUE,` as recommended in the Bioconductor vignette [8].
+```
+txi <- tximport(files,
+                type = "salmon",
+                tx2gene = tx2gene,
+                ignoreTxVersion = TRUE)
+```
 
 The summarized counts were then used to construct a `DESeqDataSet` object using the design formula:
 
@@ -117,13 +123,39 @@ dds <- DESeqDataSetFromTximport(
   design = ~ condition
 )
 ```
-This design models how gene expression changes across the three developmental stages. The `DESeq2` object was saved for use in downstream differential expression and functional enrichment analyses.
+The `DESeq2` object was saved for use in downstream differential expression and functional enrichment analyses.
 
 ### 5.0 - Differential Gene Expression Analysis
 
+The previously constructed `DESeqDataSet` object was loaded and pre-filtered to remove low-count genes. This step reduces noise and improves statistical power. This design models how gene expression changes across the three developmental stages. For visualization purposes, a variance-stabilizing transformation (VST) was applied to normalized counts, `vsd`. The transformed data were used for PCA, clustering, and heatmap visualizations.
+The full code is available in [`07_setup.R`](scripts/07_setup.R).
+
 #### 5.1 - DESeq2: Wald Test
+`DESeq2` implements the Wald Test to identify genes that are differentially expressed between specific developmental stages [10]. `DESeq2` models the RNA-Seq count data using a negative binomial framework and evaluates whether the estimated log2 fold change between two stages is significantly different from zero [10].
+
+Analysis was performed for:
+
+* Stage_2 (Thin) vs Stage_1 (Early)
+* Stage_3 (Mature) vs Stage_1 (Early)
+* Stage_3 (Mature) vs Stage_2 (Thin)
+
+For Stage_2 vs Stage_1 and Stage_3 vs Stage_1, log2 fold changes were shrunk using the `apeglm` method to provide more stable and biologically meaningful effect size estimates. For Stage_3 vs Stage_2, standard contrast-based results were extracted.
+
+Genes were considered significantly differentially expressed if they had:
+
+* An adjusted p-value (padj) < 0.05
+* An absolute log2 fold change > 1
+
+#### Visualizations Performed
+
+* **One Principal Component Analysis (PCA) plot** was generated using variance-stabilized data vsd to assess overall sample clustering by developmental stage (Early, Thin, Mature).
+* **Volcano plots** were created for each stage comparison to visualize statistical significance and the magnitude of expression change.
+* **Heatmaps** of the top differentially expressed genes were generated to examine expression patterns.
+  
+Visualizations can be viewed in the [`figures`](figures) directory.
 
 #### 5.2 - DESeq2: Likelihood Ratio Test (LRT)
+A likelihood ratio test (LRT) was performed to identify genes whose expression changed significantly across all developmental stages (Stage_1 – Early, Stage_2 – Thin, Stage_3 – Mature) [22]. Unlike the Wald test, which compares two stages at a time, the LRT evaluates whether gene expression varies across the entire experimental design. This was done by comparing a full model that included the condition term to a reduced model without it. Genes with an adjusted p-value (padj) < 0.05 were considered significantly stage-dependent. Significant genes were then clustered using variance-stabilized expression values to identify shared expression patterns across stages.
 
 ### 6.0 - Functional Enrichment Analysis 
 
@@ -175,6 +207,7 @@ This design models how gene expression changes across the three developmental st
 [19] “03 From fastq files to alignments – Introduction to RNA-seq,” Github.io, 2022. https://scienceparkstudygroup.github.io/rna-seq-lesson/03-qc-of-sequencing-results/index.html <br/>
 [20] “Salmon - Salmon 1.10.1 documentation,” salmon.readthedocs.io. https://salmon.readthedocs.io/en/latest/salmon.html <br/>
 [21] “makeTxDbFromGFF function - RDocumentation,” Rdocumentation.org, 2016. https://www.rdocumentation.org/packages/GenomicFeatures/versions/1.24.4/topics/makeTxDbFromGFF (accessed Feb. 28, 2026). <br/>
+[22] “Welcome To Zscaler Directory Authentication,” Github.io, 2025. https://hbctraining.github.io/DGE_workshop_salmon/lessons/08_DGE_LRT.html <br/>
 
 
 
