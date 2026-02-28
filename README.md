@@ -158,11 +158,15 @@ Visualizations can be viewed in the [`figures`](figures) directory.
 A likelihood ratio test (LRT) was performed to identify genes whose expression changed significantly across all developmental stages (Stage_1 – Early, Stage_2 – Thin, Stage_3 – Mature) [22]. Unlike the Wald test, which compares two stages at a time, the LRT evaluates whether gene expression varies across the entire experimental design. This was done by comparing a full model that included the condition term to a reduced model without it. Genes with an adjusted p-value (padj) < 0.05 were considered significantly stage-dependent. Significant genes were then clustered using variance-stabilized expression values to identify shared expression patterns across stages.
 
 ### 6.0 - Functional Enrichment Analysis 
+Functional enrichment analysis was performed to interpret the biological significance of differentially expressed genes identified from both the Wald test and LRT clusters. All enrichment analyses were conducted using the `clusterProfiler` package with gene annotations from `org.Sc.sgd.db`. Enrichment of Wald test results was implemented in [`08_functional_analysis.R`](scripts/08_functional_analysis.R), while enrichment of LRT-derived gene clusters was performed separately in [`09_clusters.R`](scripts.09_clusters.R).
 
 #### 6.1 - Over-representation Analysis (ORA): GO & KEGG 
+ORA was performed using significantly differentially expressed genes from the Wald test (padj < 0.05 and |log2fold change| > 1). GO Biological Process and KEGG pathway enrichment were conducted using enrichGO() and enrichKEGG(). Results were visualized using dot plots.
+
+For the LRT analysis, significant genes were clustered based on shared expression patterns (Section 5.2). ORA was then performed independently for each cluster in [`09_clusters.R`](scripts.09_clusters.R) to identify biological pathways.
 
 #### 6.2 - Gene Set Enrichment Analysis (GSEA): GO & KEGG
-
+GSEA was performed using ranked gene lists rather than applying a strict significance cutoff. For Wald results, genes were ranked by log2 fold change and analyzed using gseGO() and gseKEGG() in [`08_functional_analysis.R`](scripts/08_functional_analysis.R). For the LRT analysis, genes were ranked by the LRT test statistic, and GSEA was performed in [`09_clusters.R`](scripts.09_clusters.R) to identify pathways associated with overall stage-dependent expression changes. Enrichment results were visualized using dot plots and enrichment plots.
 
 # Results
 ### FastQC 
