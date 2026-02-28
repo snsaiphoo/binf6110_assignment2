@@ -16,7 +16,7 @@ results_dir <- here("results")
 
 # Load Wald results for each stage comparison
 res_df <- read.csv(
-  here("results", "Wald_full_Stage_3_vs_Stage_1.csv")
+  here("results", "Wald_full_Stage_3_vs_Stage_2.csv")
 )
 
 # Ensure ORF column exists
@@ -76,7 +76,7 @@ compare_go <- compareCluster(
 
 png(file.path(figures_dir, "GOenrich_S3v2_upvsdown.png"),
     width = 1000,
-    height = 800,
+    height = 1000,
     res = 150)
 
 dotplot(compare_go, showCategory = 7) +
