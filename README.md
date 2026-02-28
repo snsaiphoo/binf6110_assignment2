@@ -263,13 +263,21 @@ Over-representation analysis (ORA) was performed on significantly differentially
 #### GO Biological Process - Stage 3 vs Stage 1 (Mature vs Thin Biofilm)
 
 <div align="center">
-<img src="figures/GOenrich_S3v1_upvsdown.png" width="750"/>
+<img src="figures/GOenrich_S3v1_upvsdown.png" width="600"/>
 <br>
 <b>Figure 5.</b> GO Biological Process over-representation analysis (ORA) of significantly upregulated and downregulated genes in the Stage 3 vs Stage 1 comparison. Dot size represents gene ratio, and color indicates adjusted p-value.
 </div>
 <br/>
 GO Biological Process enrichment revealed that genes upregulated in Stage 3 were significantly associated with mitochondrial organization and mitochondrial respiration, as shown in Figure 5. In contrast, downregulated genes were enriched for metabolic processes such as transmembrane transport, lipid metabolic process, and organic acid metabolic process. These results suggest substantial metabolic reprogramming between early and late stages of biofilm development.
 
+#### KEGG Pathway - Stage 3 vs Stage 1 (Mature vs Thin Biofilm)
+<div align="center">
+<img src="figures/KEGGenrich_S3v1_upvsdown.png" width="600"/>
+<br>
+<b>Figure 6.</b> KEGG pathway over-representation analysis (ORA) of significantly upregulated (n = 363) and downregulated (n = 287) genes in the Stage 3 vs Stage 1 comparison. Dot size represents gene ratio and color indicates adjusted p-value.
+</div>
+<br/>
+KEGG pathway enrichment analysis of the Stage 3 vs Stage 1 comparison identified significant pathway associations among 363 upregulated and 287 downregulated genes, shown in Figure 6. Upregulated genes were enriched for pathways including ribosome, proteasome, oxidative phosphorylation, and the citrate cycle (TCA cycle). In contrast, downregulated genes were enriched for pathways related to the biosynthesis of secondary metabolites, glycolysis/gluconeogenesis, fatty acid metabolism, and pyruvate metabolism. The reduced number of genes included in KEGG analysis relative to GO reflects pathway annotation coverage within the KEGG database.
 
 #### GSEA Visualizations
 
