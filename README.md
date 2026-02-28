@@ -187,6 +187,8 @@ Raw sequencing reads from Stage 1 (Early), Stage 2 (Thin), and Stage 3 (Mature) 
 Per-base sequence quality passed for all samples, and no adapter contamination was detected. GC content was consistent across stages (42–43%) and between biological replicates. Although per-base sequence content and duplication levels were flagged in several samples, these patterns are commonly observed in RNA-seq data due to transcript abundance bias. Overall, sequencing quality was sufficient to proceed with alignment and differential expression analysis.
 
 ### Salmon Outputs
+Transcript-level quantification was performed using Salmon against the Saccharomyces cerevisiae _S288C_ reference transcriptome. Mapping rates were consistently high across samples, averaging 85.47% for Stage 1, 81.17% for Stage 2, and 83.11% for Stage 3. Individual replicate mapping rates ranged from 74.2% to 92.3%. These high alignment rates indicate efficient assignment of reads to annotated transcripts and support the suitability of the S288C reference genome for this dataset. Overall, the strong mapping performance provides confidence in downstream transcript quantification and differential expression analysis.
+
 
 ### Differential Expression Analysis 
 #### Wald Test Visualizations 
