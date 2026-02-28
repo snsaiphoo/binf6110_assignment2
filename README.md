@@ -250,9 +250,7 @@ Heatmaps of the top 15 differentially expressed genes were generated for each pa
 <b>Figure 4.</b> Gene expression patterns of LRT-significant genes grouped by similar expression trajectories across Stage 1, Stage 2, and Stage 3. Values represent Z-scored gene expression levels.
 </div>
 <br/>
-A likelihood ratio test (LRT) was performed to identify genes that change significantly across all three developmental stages. Significant genes were grouped based on similar expression patterns (Figure 4).
-
-Group 1 genes (n = 346) showed high expression in Stage 1 followed by decreased expression in later stages. Group 3 genes (n = 523) displayed the opposite trend, with low expression in Stage 1 and 2 and increased expression in Stage 3. Groups 2 (n = 51) and 4 (n = 80) showed peak expression in Stage 2 before decreasing. These results demonstrate clear stage-dependent transcriptional changes during biofilm development.
+A likelihood ratio test (LRT) was performed to identify genes that change significantly across all three developmental stages. Significant genes were grouped based on similar expression patterns shown in Figure 4. Group 1 genes (n = 346) showed high expression in Stage 1 followed by decreased expression in later stages. Group 3 genes (n = 523) displayed the opposite trend, with low expression in Stage 1 and 2 and increased expression in Stage 3. Groups 2 (n = 51) and 4 (n = 80) showed peak expression in Stage 2 before decreasing. These results demonstrate clear stage-dependent transcriptional changes during biofilm development.
 
 ### Functional Enrichment Analysis 
 
