@@ -250,9 +250,7 @@ Heatmaps of the top 15 differentially expressed genes were generated for each pa
 <b>Figure 4.</b> Gene expression patterns of LRT-significant genes grouped by similar expression trajectories across Stage 1, Stage 2, and Stage 3. Values represent Z-scored gene expression levels.
 </div>
 <br/>
-A likelihood ratio test (LRT) was performed to identify genes that change significantly across all three developmental stages. Significant genes were grouped based on similar expression patterns (Figure 4).
-
-Group 1 genes (n = 346) showed high expression in Stage 1 followed by decreased expression in later stages. Group 3 genes (n = 523) displayed the opposite trend, with low expression in Stage 1 and 2 and increased expression in Stage 3. Groups 2 (n = 51) and 4 (n = 80) showed peak expression in Stage 2 before decreasing. These results demonstrate clear stage-dependent transcriptional changes during biofilm development.
+A likelihood ratio test (LRT) was performed to identify genes that change significantly across all three developmental stages. Significant genes were grouped based on similar expression patterns shown in Figure 4. Group 1 genes (n = 346) showed high expression in Stage 1 followed by decreased expression in later stages. Group 3 genes (n = 523) displayed the opposite trend, with low expression in Stage 1 and 2 and increased expression in Stage 3. Groups 2 (n = 51) and 4 (n = 80) showed peak expression in Stage 2 before decreasing. These results demonstrate clear stage-dependent transcriptional changes during biofilm development.
 
 ### Functional Enrichment Analysis 
 
@@ -263,13 +261,71 @@ Over-representation analysis (ORA) was performed on significantly differentially
 #### GO Biological Process - Stage 3 vs Stage 1 (Mature vs Thin Biofilm)
 
 <div align="center">
-<img src="figures/GOenrich_S3v1_upvsdown.png" width="750"/>
+<img src="figures/GOenrich_S3v1_upvsdown.png" width="600"/>
 <br>
 <b>Figure 5.</b> GO Biological Process over-representation analysis (ORA) of significantly upregulated and downregulated genes in the Stage 3 vs Stage 1 comparison. Dot size represents gene ratio, and color indicates adjusted p-value.
 </div>
 <br/>
 GO Biological Process enrichment revealed that genes upregulated in Stage 3 were significantly associated with mitochondrial organization and mitochondrial respiration, as shown in Figure 5. In contrast, downregulated genes were enriched for metabolic processes such as transmembrane transport, lipid metabolic process, and organic acid metabolic process. These results suggest substantial metabolic reprogramming between early and late stages of biofilm development.
 
+#### KEGG Pathway - Stage 3 vs Stage 1 (Mature vs Thin Biofilm)
+<div align="center">
+<img src="figures/KEGGenrich_S3v1_upvsdown.png" width="600"/>
+<br>
+<b>Figure 6.</b> KEGG pathway over-representation analysis (ORA) of significantly upregulated (n = 363) and downregulated (n = 287) genes in the Stage 3 vs Stage 1 comparison. Dot size represents gene ratio and color indicates adjusted p-value.
+</div>
+<br/>
+KEGG pathway enrichment analysis of the Stage 3 vs Stage 1 comparison identified significant pathway associations among 363 upregulated and 287 downregulated genes, shown in Figure 6. Upregulated genes were enriched for pathways including ribosome, proteasome, oxidative phosphorylation, and the citrate cycle (TCA cycle). In contrast, downregulated genes were enriched for pathways related to the biosynthesis of secondary metabolites, glycolysis/gluconeogenesis, fatty acid metabolism, and pyruvate metabolism. The reduced number of genes included in KEGG analysis relative to GO reflects pathway annotation coverage within the KEGG database.
+
+#### GO Enrichment of LRT Clusters 1 and 3
+GO enrichment analysis was performed for genes within each LRT-defined expression cluster. Clusters 1 and 3 were highlighted because they represent the most distinct opposing expression trajectories across developmental progression.
+<div align="center">
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="figures/GOenrich_LRT_cluster_1.png" width="400"/><br>
+      <sub><b>Figure 7A.</b> LRT Cluster 1</sub>
+    </td>
+    <td align="center">
+      <img src="figures/GOenrich_LRT_cluster_3.png" width="400"/><br>
+      <sub><b>Figure 7B.</b> LRT Cluster 3</sub>
+    </td>
+  </tr>
+</table>
+
+<br>
+<b>Figure 7.</b> GO Biological Process enrichment analysis of LRT-defined expression clusters. 
+(A) Cluster 1 genes, which exhibit highest mean expression in Stage 1, are enriched for early-stage metabolic processes. 
+(B) Cluster 3 genes, which show peak expression in Stage 3, are enriched for energy production and mitochondrial-associated processes. 
+Dot size represents gene ratio and color indicates adjusted p-value (darker red = greater statistical significance).
+</div>
+<br/>
+Cluster 1 genes exhibited the highest mean expression in Stage 1, followed by decreased expression in later stages, consistent with early-stage dominance. GO enrichment analysis revealed significant associations with metabolic processes, including monocarboxylic acid metabolic process and purine-containing compound catabolic process, as shown in Figure 7A. In contrast, Figure 7B of Cluster 3 genes showed increasing expression across stages, peaking in Stage 3, indicating late-stage activation. These genes were enriched for processes such as carbohydrate metabolic process, generation of precursor metabolites and energy, energy derivation by oxidation of organic compounds, and mitochondrion organization. Together, these findings demonstrate distinct stage-dependent metabolic programs during biofilm development.
+
+#### KEGG Enrichment of LRT Cluster 1 and 3
+
+<div align="center">
+<table>
+  <tr>
+    <td align="center">
+      <img src="figures/KEGGenrich_LRT_cluster1.png" width="400"/><br>
+      <sub><b>Figure 8A.</b> LRT Cluster 1</sub>
+    </td>
+    <td align="center">
+      <img src="figures/KEGGenrich_LRT_cluster3.png" width="400"/><br>
+      <sub><b>Figure 8B.</b> LRT Cluster 3</sub>
+    </td>
+  </tr>
+</table>
+<br>
+<b>Figure 8.</b> KEGG pathway enrichment analysis of LRT-defined expression clusters. 
+(A) Cluster 1 genes, which exhibit highest mean expression in Stage 1, are enriched for metabolic pathways including biosynthesis of secondary metabolites, carbon metabolism, and glycolysis/gluconeogenesis. 
+(B) Cluster 3 genes, which peak in Stage 3, are enriched for pathways related to oxidative phosphorylation, proteasome activity, and biosynthesis of secondary metabolites. 
+Dot size represents gene count and color indicates adjusted p-value (darker red = greater statistical significance).
+</div>
+<br/>
+Cluster 1 genes, which exhibited highest mean expression in Stage 1 followed by progressive reduction across later stages, were enriched formetabolic pathways including biosynthesis of secondary metabolites, carbon metabolism, and glycolysis/gluconeogenesis, shown in Figure 8A. In contrast, Cluster 3 genes show increasing expression across developmental progression and peak in Stage 3, and were enriched for pathways such as oxidative phosphorylation, proteasome, and biosynthesis of secondary metabolites, shown in Figure 8B. These enrichments indicate enhanced energy production and protein turnover in later stages of biofilm development.
 
 #### GSEA Visualizations
 
