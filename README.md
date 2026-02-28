@@ -21,11 +21,31 @@ Differential expression analysis was performed using `DESeq2` [10]. This was sel
 To evaluate biological relevance, both over-representation analysis (ORA) and Gene Set Enrichment Analysis (GSEA) were conducted using `clusterProfiler` [14]. ORA identifies enriched Gene Ontology (GO) terms and KEGG pathways based on predefined lists of differentially expressed genes, whereas GSEA assesses enrichment across ranked gene lists without requiring an arbitrary cutoff, allowing detection of coordinated but subtle pathway-level changes [15]. While each statistical and enrichment method has limitations, such as including sensitivity to model assumptions and threshold selection, the combined use of complementary approaches strengthens confidence in the biological interpretation of flor yeast transcriptional regulation during biofilm maturation.
 
 ## Methods 
-### 1.0 - Data Acquisition
+### 1.0 - Data and Tools
+#### 1.1 - Containers
+All command-line software used in this analysis was executed using containerized environments for reproducibility and version control. Singularity was used to pull pre-built Docker images and convert them into `.sif` container files stored in a dedicated `containers/` directory. 
 
-#### 1.1 - Reference Genome Reasoning
+#### 1.2 - Data Acquisition
+The Flor yeast samples were obtained from the NCBI Sequence Read Archive (SRA) and correspond to the yeast biofilm (velum) development study described in [1]. The Saccharomyces cerevisiae samples were collected at three stages of biofilm formation during wine aging:
+
+* **Stage 1** (10 days) – SRR10551665, SRR10551664, SRR10551663
+* **Stage 2** (45 days) – SRR10551662, SRR10551661, SRR10551660
+* **Stage 3** (71 days) – SRR10551659, SRR10551658, SRR10551657
+
+SRA files were retrieved using the prefetch command from the SRA Toolkit container. The script can be seen in [`01_data.sh`](scripts/01_data.sh).
+These SRA files were then converted to FASTQ format using fasterq-dump. The script can be seen in [`02_data.sh`](scripts/02_data.sh). The resulting FASTQ files were compressed for use in downstream quality control and transcript quantification.
+
+#### 1.3 - Reference Genome Reasoning
+The RNA-seq data analyzed in this study originate from the Saccharomyces cerevisiae L-329 strain described in [1]. However, transcript quantification was performed using the S288C reference transcriptome.
+
+To validate this choice, [`00_refanalysis.sh`](scripts/00_refanalysis.sh) was used to assess sequence conservation between the L-329 strain and the S288C reference using BLAST. Results indicated that over 99% of queried sequences aligned to the S288C reference, with an average percent identity of approximately 80%, supporting substantial conservation across coding regions.
+
+Although L-329 is the experimental strain, S288C was selected due to its well-annotated and curated genome assembly. Given the high alignment rate and strong sequence conservation, S288C provides an appropriate and biologically relevant reference for transcript quantification and downstream functional enrichment analyses.
+
+The S288C transcript FASTA file was therefore used for downstream analysis.
 
 ### 2.0 - Quality Control with FastQC
+
 
 ### 3.0 - Quantification with salmon
 
