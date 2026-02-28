@@ -20,7 +20,7 @@ if (!dir.exists(figures_dir)) {
 }
                     
 # Load DESeq2 dataset
-dds <- readRDS(here("dds_object.rds"))
+dds <- readRDS(here("results/dds_object.rds"))
 
 # Pre-filter low-count genes
 dds <- dds[rowSums(counts(dds)) > 10, ]
