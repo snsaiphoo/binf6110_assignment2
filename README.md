@@ -249,7 +249,7 @@ Heatmaps of the top 15 differentially expressed genes were generated for each pa
 <br>
 <b>Figure 4.</b> Gene expression patterns of LRT-significant genes grouped by similar expression trajectories across Stage 1, Stage 2, and Stage 3. Values represent Z-scored gene expression levels.
 </div>
-
+<br/>
 A likelihood ratio test (LRT) was performed to identify genes that change significantly across all three developmental stages. Significant genes were grouped based on similar expression patterns (Figure 4).
 
 Group 1 genes (n = 346) showed high expression in Stage 1 followed by decreased expression in later stages. Group 3 genes (n = 523) displayed the opposite trend, with low expression in Stage 1 and 2 and increased expression in Stage 3. Groups 2 (n = 51) and 4 (n = 80) showed peak expression in Stage 2 before decreasing. These results demonstrate clear stage-dependent transcriptional changes during biofilm development.
@@ -257,6 +257,19 @@ Group 1 genes (n = 346) showed high expression in Stage 1 followed by decreased 
 ### Functional Enrichment Analysis 
 
 #### ORA Visualizations
+
+Over-representation analysis (ORA) was performed on significantly differentially expressed genes identified in the Stage 3 vs Stage 1 comparison. The analysis was performed on the other comparison stages as well, but visualizations for those can be seen in the [`figures`](figures) directory.
+
+#### GO Biological Process - Stage 3 vs Stage 1 (Mature vs Thin Biofilm)
+
+<div align="center">
+<img src="figures/GOenrich_S3v1_upvsdown.png" width="750"/>
+<br>
+<b>Figure 5.</b> GO Biological Process over-representation analysis (ORA) of significantly upregulated and downregulated genes in the Stage 3 vs Stage 1 comparison. Dot size represents gene ratio, and color indicates adjusted p-value.
+</div>
+<br/>
+GO Biological Process enrichment revealed that genes upregulated in Stage 3 were significantly associated with mitochondrial organization and mitochondrial respiration, as shown in Figure 5. In contrast, downregulated genes were enriched for metabolic processes such as transmembrane transport, lipid metabolic process, and organic acid metabolic process. These results suggest substantial metabolic reprogramming between early and late stages of biofilm development.
+
 
 #### GSEA Visualizations
 
