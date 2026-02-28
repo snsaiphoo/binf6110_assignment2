@@ -192,6 +192,15 @@ Transcript-level quantification was performed using Salmon against the Saccharom
 
 ### Differential Expression Analysis 
 #### Wald Test Visualizations 
+<div align="center">
+
+<img src="figures/PCA_plot.png" width="700"/>
+
+**Figure 1.** Principal component analysis (PCA) of variance-stabilized counts across all developmental stages. PC1 explains 71% of the variance and separates Stage 1 from later stages, while PC2 explains 24% of the variance.
+
+</div>
+
+The first visualization performed for the differential gene analysis was the principal component analysis (PCA) for the three stages. Figure 1 revealed clear clustering among the three developmental stages. PC1 accounted for 71% of the variance and separated Stage 1, while PC2 explained 24% and distinguished Stage 2 from Stage 3. Biological replicates clustered closely within each condition, demonstrating high reproducibility and minimal technical variation.
 
 #### LRT Visualization
 
