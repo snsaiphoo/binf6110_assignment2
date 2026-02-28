@@ -329,6 +329,21 @@ Cluster 1 genes, which exhibited highest mean expression in Stage 1 followed by 
 
 #### GSEA Visualizations
 
+<div align="center">
+<img src="figures/GSEA_GO_LRT_top_pathway.png" width="600"/>
+<br>
+<b>Figure 9.</b> GSEA enrichment profile for the GO term carbohydrate metabolic process based on LRT-ranked genes. The running enrichment score (green) and gene positions (black ticks) are shown across the ranked gene list.
+</div>
+<br/>
+Gene Set Enrichment Analysis (GSEA) was performed using genes ranked by the LRT statistic to identify pathways exhibiting coordinated stage-dependent expression changes. The GO Biological Process term carbohydrate metabolic process showed significant positive enrichment, with NES = 1.40 and adjusted p-value = 1.04 × 10⁻⁶, as shown in Figure 9, indicating coordinated regulation of genes involved in carbohydrate metabolism across developmental stages.
+
+<div align="center">
+<img src="figures/GSEA_KEGG_LRT_top_pathway.png" width="600"/>
+<br>
+<b>Figure 10.</b> GSEA enrichment profile for the KEGG pathway biosynthesis of secondary metabolites derived from LRT-ranked genes, illustrating coordinated pathway-level enrichment.
+</div>
+<br/>
+Similarly, KEGG pathway analysis identified secondary metabolite biosynthesis as the top-enriched pathway, with an NES = 1.38 and an adjusted p-value = 1.07 × 10⁻⁸, shown in Figure 10. The strong enrichment signal reflects substantial metabolic reprogramming during biofilm progression. These GSEA findings are consistent with overrepresentation analyses and further support stage-dependent metabolic remodeling.
 
 ## Discussion 
 
