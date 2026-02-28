@@ -38,24 +38,24 @@ These SRA files were then converted to FASTQ format using fasterq-dump. The scri
 #### 1.3 - Reference Genome Reasoning
 The RNA-seq data analyzed in this study originate from the _Saccharomyces cerevisiae L-329_ strain described in [1]. However, transcript quantification was performed using the _S288C_ reference transcriptome.
 
-To validate this choice, [`00_refanalysis.sh`](scripts/00_refanalysis.sh) was used to assess sequence conservation between the _L-329_ strain and the _S288C_ reference using BLAST. Results indicated that over 99% of queried sequences aligned to the _S288C_ reference, with an average percent identity of approximately 80%, supporting substantial conservation across coding regions.
+To validate this choice, [`00_refanalysis.sh`](scripts/00_refanalysis.sh) was used to assess sequence conservation between the _L-329_ [16] strain and the _S288C_ reference using BLAST. Results indicated that over 99% of queried sequences aligned to the _S288C_ reference [17], with an average percent identity of approximately 80%, supporting substantial conservation across coding regions.
 
 Although _L-329_ is the experimental strain, _S288C_ was selected due to its well-annotated and curated genome assembly. Given the high alignment rate and strong sequence conservation, _S288C_ provides an appropriate and biologically relevant reference for transcript quantification and downstream functional enrichment analyses.
 
 The _S288C_ transcript FASTA file was therefore used for downstream analysis.
 
 ### 2.0 - Quality Control with FastQC
-All nine datasets were assessed for quality using `FastQC` version 3.2.1 [16], which was run within a containerized environment.
+All nine datasets were assessed for quality using `FastQC` version 3.2.1 [18], which was run within a containerized environment.
 
 ```
 apptainer exec containers/fastqc.sif fastqc raw_data/*.fastq.gz -o fastqc_reports/ -t 8
 ```
 
-Eight threads were used to improve computational efficiency. The full code can be seen in [`03_fastqc.sh`](scripts/03_fastqc.sh). All compressed `FASTQ` files located in the raw_data/ directory were analyzed, and output reports were written to the [`fastqc_reports`](fastqc_reports) directory. Per-base sequence quality, GC content distribution, sequence length distribution, and adapter contamination were evaluated for each sample [17]. After this evaluation, it was seen that all the samples demonstrated acceptable quality metrics and were used for downstream transcript quantification. 
+Eight threads were used to improve computational efficiency. The full code can be seen in [`03_fastqc.sh`](scripts/03_fastqc.sh). All compressed `FASTQ` files located in the raw_data/ directory were analyzed, and output reports were written to the [`fastqc_reports`](fastqc_reports) directory. Per-base sequence quality, GC content distribution, sequence length distribution, and adapter contamination were evaluated for each sample [19]. After this evaluation, it was seen that all the samples demonstrated acceptable quality metrics and were used for downstream transcript quantification. 
 
 ### 3.0 - Quantification with salmon
 
-Transcript-level abundance estimation was performed using `Salmon` version 1.10.3 in quasi-mapping mode within a containerized environment [18].
+Transcript-level abundance estimation was performed using `Salmon` version 1.10.3 in quasi-mapping mode within a containerized environment [20].
 
 #### Transcript Index 
 A transcriptome index was first generated from the _Saccharomyces cerevisiae S288C_ strain transcriptome (strain S288C). As mentioned, the FASTA file corresponding to the _S288C_ reference assembly was used for index construction:
@@ -66,7 +66,7 @@ apptainer exec containers/salmon.sif salmon index \
    -i salmon_index \
    -k 31`
 ```
-A k-mer size of 31 was used for index construction. This value was selected based on recommendations provided in the `Salmon` documentation [18], which suggests k = 31 as an appropriate default for accurate quasi-mapping performance. The index was saved to the salmon_index/ directory and used for all downstream quantification steps. This folder is not shown in the repository. 
+A k-mer size of 31 was used for index construction. This value was selected based on recommendations provided in the `Salmon` documentation [20], which suggests k = 31 as an appropriate default for accurate quasi-mapping performance. The index was saved to the salmon_index/ directory and used for all downstream quantification steps. This folder is not shown in the repository. 
 
 #### Transcript Quantification 
 Samples were automatically identified using SRR accession identifiers located within the raw_data/ directory (directory not shown in repository):
@@ -88,14 +88,38 @@ do
 done
 ```
 
-Automatic library type detection, `-l A`, was enabled so `Salmon` could infer library orientation. The `--validateMappings` option was used to improve alignment specificity through selective alignment. All parameter choices were guided by recommendations in the `Salmon` documentation [18] to ensure an accurate transcript abundance estimation.
+Automatic library type detection, `-l A`, was enabled so `Salmon` could infer library orientation. The `--validateMappings` option was used to improve alignment specificity through selective alignment. All parameter choices were guided by recommendations in the `Salmon` documentation [20] to ensure an accurate transcript abundance estimation.
 
-For each sample, `Salmon` generated a quant.sf file containing transcript-level estimated counts, which can be found in the respective folders of the [`salmon_output`](salmon_output) directory . These files were subsequently imported into R using `tximport` for downstream differential expression analysis.
-
+For each sample, `Salmon` generated a quant.sf file containing transcript-level estimated counts, which can be found in the respective folders of the [`salmon_output`](salmon_output) directory. These files were subsequently imported into R using `tximport` for downstream differential expression analysis.
 
 ### 4.0 - Importing quant files with tximport
 
-### 5.0 - Differential Expression Analysis
+The quant.sf files generated in the previous step were imported into `RStudio` and summarized to gene-level counts using the `tximport` package [8]. This step converts transcript abundance estimates into gene-level counts, which are required for downstream differential expression analysis with DESeq2.
+
+All quant.sf files were stored in the [`salmon_output`](salmon_output) directory and linked to a sample metadata table describing the three velum developmental stages, with three biological replicates per stage. 
+
+#### Gene Mapping
+
+To summarize transcript-level estimates to the gene level, a transcript-to-gene mapping table, tx2gene, was created using the _Saccharomyces cerevisiae S288C_ gene annotation file `genomic.gtf` [16].
+
+A `TxDb` object was generated using `makeTxDbFromGFF()` from the `GenomicFeatures` package [21], which allowed transcript IDs, TXNAME, to be matched to their corresponding `GENEID`. Minor naming inconsistencies were resolved by removing transcript version numbers to ensure compatibility.
+
+#### Creating the DESeq2 object
+
+Gene-level counts were generated using `tximport()` with parameters appropriate for `Salmon` output, including `ignoreTxVersion = TRUE,` as recommended in the Bioconductor vignette [8].
+
+The summarized counts were then used to construct a `DESeqDataSet` object using the design formula:
+
+```
+dds <- DESeqDataSetFromTximport(
+  txi,
+  colData = sample_table,
+  design = ~ condition
+)
+```
+This design models how gene expression changes across the three developmental stages. The `DESeq2` object was saved for use in downstream differential expression and functional enrichment analyses.
+
+### 5.0 - Differential Gene Expression Analysis
 
 #### 5.1 - DESeq2: Wald Test
 
@@ -145,9 +169,12 @@ For each sample, `Salmon` generated a quant.sf file containing transcript-level 
 [13] S. Liu, Z. Wang, R. Zhu, F. Wang, Y. Cheng, and Y. Liu, “Three Differential Expression Analysis Methods for RNA Sequencing: limma, EdgeR, DESeq2,” Journal of Visualized Experiments, no. 175, Sep. 2021, doi: https://doi.org/10.3791/62528.<br/>
 [14] G. Yu, L.-G. Wang, Y. Han, and Q.-Y. He, “clusterProfiler: an R Package for Comparing Biological Themes Among Gene Clusters,” OMICS: A Journal of Integrative Biology, vol. 16, no. 5, pp. 284–287, May 2012, doi: https://doi.org/10.1089/omi.2011.0118. <br/>
 [15] A. Subramanian et al., “Gene Set Enrichment analysis: a knowledge-based Approach for Interpreting genome-wide Expression Profiles,” Proceedings of the National Academy of Sciences, vol. 102, no. 43, pp. 15545–15550, Sep. 2005, doi: https://doi.org/10.1073/pnas.0506580102. <br/>
-[16] s-andrews, “s-andrews/FastQC,” GitHub, Nov. 20, 2018. https://github.com/s-andrews/FastQC <br/>
-[17] “03 From fastq files to alignments – Introduction to RNA-seq,” Github.io, 2022. https://scienceparkstudygroup.github.io/rna-seq-lesson/03-qc-of-sequencing-results/index.html <br/>
-[18] “Salmon - Salmon 1.10.1 documentation,” salmon.readthedocs.io. https://salmon.readthedocs.io/en/latest/salmon.html <br/>
+[16] “Saccharomyces cerevisiae S288C genome assembly R64,” NCBI. https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000146045.2/ <br/>
+[17] “Saccharomyces cerevisiae genome assembly ASM304674v1,” NCBI, 2026. https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_003046745.1/ (accessed Feb. 28, 2026). <br/>
+[18] s-andrews, “s-andrews/FastQC,” GitHub, Nov. 20, 2018. https://github.com/s-andrews/FastQC <br/>
+[19] “03 From fastq files to alignments – Introduction to RNA-seq,” Github.io, 2022. https://scienceparkstudygroup.github.io/rna-seq-lesson/03-qc-of-sequencing-results/index.html <br/>
+[20] “Salmon - Salmon 1.10.1 documentation,” salmon.readthedocs.io. https://salmon.readthedocs.io/en/latest/salmon.html <br/>
+[21] “makeTxDbFromGFF function - RDocumentation,” Rdocumentation.org, 2016. https://www.rdocumentation.org/packages/GenomicFeatures/versions/1.24.4/topics/makeTxDbFromGFF (accessed Feb. 28, 2026). <br/>
 
 
 
