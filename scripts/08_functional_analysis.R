@@ -16,7 +16,7 @@ results_dir <- here("results")
 
 # Load Wald results for each stage comparison
 res_df <- read.csv(
-  here("results", "Wald_full_Stage_3_vs_Stage_2.csv")
+  here("results", "Wald_full_Stage_3_vs_Stage_1.csv")
 )
 
 # Ensure ORF column exists
