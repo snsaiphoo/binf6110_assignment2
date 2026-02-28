@@ -194,7 +194,7 @@ for (comp in comparisons) {
   # Remove NA padj values first
   res_no_na <- resLFC[!is.na(resLFC$padj), ]
   
-  # Select top 20 genes by adjusted p-value
+  # Select top 15 genes by adjusted p-value
   top_genes <- rownames(res_no_na)[order(res_no_na$padj)][1:15]
   
   # Map ORF (locus) to gene symbol
