@@ -2,6 +2,7 @@
 raw_data/
 salmon_index/
 containers/
+other/
 
 # Software containers
 *.sif
