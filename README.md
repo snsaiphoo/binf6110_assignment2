@@ -45,9 +45,53 @@ Although _L-329_ is the experimental strain, _S288C_ was selected due to its wel
 The _S288C_ transcript FASTA file was therefore used for downstream analysis.
 
 ### 2.0 - Quality Control with FastQC
+All nine datasets were assessed for quality using `FastQC` version 3.2.1 [16], which was run within a containerized environment.
 
+```
+apptainer exec containers/fastqc.sif fastqc raw_data/*.fastq.gz -o fastqc_reports/ -t 8
+```
+
+Eight threads were used to improve computational efficiency. The full code can be seen in [`03_fastqc.sh`](scripts/03_fastqc.sh). All compressed `FASTQ` files located in the raw_data/ directory were analyzed, and output reports were written to the [`fastqc_reports`](fastqc_reports) directory. Per-base sequence quality, GC content distribution, sequence length distribution, and adapter contamination were evaluated for each sample [17]. After this evaluation, it was seen that all the samples demonstrated acceptable quality metrics and were used for downstream transcript quantification. 
 
 ### 3.0 - Quantification with salmon
+
+Transcript-level abundance estimation was performed using `Salmon` version 1.10.3 in quasi-mapping mode within a containerized environment [18].
+
+#### Transcript Index 
+A transcriptome index was first generated from the _Saccharomyces cerevisiae S288C_ strain transcriptome (strain S288C). As mentioned, the FASTA file corresponding to the _S288C_ reference assembly was used for index construction:
+
+```
+apptainer exec containers/salmon.sif salmon index \
+   -t raw_data/rna.fna \
+   -i salmon_index \
+   -k 31`
+```
+A k-mer size of 31 was used for index construction. This value was selected based on recommendations provided in the `Salmon` documentation [18], which suggests k = 31 as an appropriate default for accurate quasi-mapping performance. The index was saved to the salmon_index/ directory and used for all downstream quantification steps. This folder is not shown in the repository. 
+
+#### Transcript Quantification 
+Samples were automatically identified using SRR accession identifiers located within the raw_data/ directory (directory not shown in repository):
+
+```
+names=($(ls -d raw_data/SRR*/ | awk -F'/' '{print $2}'))`
+```
+Transcript quantification was then performed iteratively for each sample:
+
+```
+for i in "${names[@]}"
+do
+   apptainer exec containers/salmon.sif salmon quant \
+       -i salmon_index \
+       -l A \
+       -r raw_data/${i}.fastq.gz \
+       --validateMappings \
+       -o salmon_output/${i}
+done
+```
+
+Automatic library type detection, `-l A`, was enabled so `Salmon` could infer library orientation. The `--validateMappings` option was used to improve alignment specificity through selective alignment. All parameter choices were guided by recommendations in the `Salmon` documentation [18] to ensure an accurate transcript abundance estimation.
+
+For each sample, `Salmon` generated a quant.sf file containing transcript-level estimated counts, which can be found in the respective folders of the [`salmon_output`](salmon_output) directory . These files were subsequently imported into R using `tximport` for downstream differential expression analysis.
+
 
 ### 4.0 - Importing quant files with tximport
 
@@ -101,3 +145,9 @@ The _S288C_ transcript FASTA file was therefore used for downstream analysis.
 [13] S. Liu, Z. Wang, R. Zhu, F. Wang, Y. Cheng, and Y. Liu, “Three Differential Expression Analysis Methods for RNA Sequencing: limma, EdgeR, DESeq2,” Journal of Visualized Experiments, no. 175, Sep. 2021, doi: https://doi.org/10.3791/62528.<br/>
 [14] G. Yu, L.-G. Wang, Y. Han, and Q.-Y. He, “clusterProfiler: an R Package for Comparing Biological Themes Among Gene Clusters,” OMICS: A Journal of Integrative Biology, vol. 16, no. 5, pp. 284–287, May 2012, doi: https://doi.org/10.1089/omi.2011.0118. <br/>
 [15] A. Subramanian et al., “Gene Set Enrichment analysis: a knowledge-based Approach for Interpreting genome-wide Expression Profiles,” Proceedings of the National Academy of Sciences, vol. 102, no. 43, pp. 15545–15550, Sep. 2005, doi: https://doi.org/10.1073/pnas.0506580102. <br/>
+[16] s-andrews, “s-andrews/FastQC,” GitHub, Nov. 20, 2018. https://github.com/s-andrews/FastQC <br/>
+[17] “03 From fastq files to alignments – Introduction to RNA-seq,” Github.io, 2022. https://scienceparkstudygroup.github.io/rna-seq-lesson/03-qc-of-sequencing-results/index.html <br/>
+[18] “Salmon - Salmon 1.10.1 documentation,” salmon.readthedocs.io. https://salmon.readthedocs.io/en/latest/salmon.html <br/>
+
+
+
