@@ -187,15 +187,89 @@ Raw sequencing reads from Stage 1 (Early), Stage 2 (Thin), and Stage 3 (Mature) 
 Per-base sequence quality passed for all samples, and no adapter contamination was detected. GC content was consistent across stages (42–43%) and between biological replicates. Although per-base sequence content and duplication levels were flagged in several samples, these patterns are commonly observed in RNA-seq data due to transcript abundance bias. Overall, sequencing quality was sufficient to proceed with alignment and differential expression analysis.
 
 ### Salmon Outputs
+Transcript-level quantification was performed using Salmon against the Saccharomyces cerevisiae _S288C_ reference transcriptome. Mapping rates were consistently high across samples, averaging 85.47% for Stage 1, 81.17% for Stage 2, and 83.11% for Stage 3. Individual replicate mapping rates ranged from 74.2% to 92.3%. These high alignment rates indicate efficient assignment of reads to annotated transcripts and support the suitability of the S288C reference genome for this dataset. Overall, the strong mapping performance provides confidence in downstream transcript quantification and differential expression analysis.
+
 
 ### Differential Expression Analysis 
 #### Wald Test Visualizations 
+<div align="center">
+
+<img src="figures/PCA_plot.png" width="600"/>
+
+**Figure 1.** Principal component analysis (PCA) of variance-stabilized counts across all developmental stages. PC1 explains 71% of the variance and separates Stage 1 from later stages, while PC2 explains 24% of the variance.
+
+</div>
+
+The first visualization performed for the differential gene analysis was the principal component analysis (PCA) for the three stages. Figure 1 revealed clear clustering among the three developmental stages. PC1 accounted for 71% of the variance and separated Stage 1, while PC2 explained 24% and distinguished Stage 2 from Stage 3. Biological replicates clustered closely within each condition, demonstrating high reproducibility and minimal technical variation.
+
+<div align="center">
+
+<img src="figures/Volcano_Stage_3%20vs%20Stage_1.png" width="600"/>
+
+**Figure 2.** Volcano plot of differential expression analysis (Wald test) comparing Stage 3 and Stage 1. Red points represent significantly upregulated genes, blue points represent significantly downregulated genes, and gray points indicate non-significant genes.
+
+</div>
+
+The volcano plot comparing Stage 3 and Stage 1, shown in Figure 2, demonstrates transcriptional changes, with numerous genes significantly upregulated and downregulated. The points are approximately symmetric around zero, indicating comparable numbers of genes exhibiting positive and negative log2fold changes. Several genes exhibit large fold changes and strong statistical significance.
+
+<br/>
+
+<div align="center">
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="figures/Heatmap_Stage_2_vs_Stage_1.png" width="300"/><br>
+      <sub><b>Figure 3A.</b> Stage 2 vs Stage 1</sub>
+    </td>
+    <td align="center">
+      <img src="figures/Heatmap_Stage_3_vs_Stage_2.png" width="300"/><br>
+      <sub><b>Figure 3B.</b> Stage 3 vs Stage 2</sub>
+    </td>
+    <td align="center">
+      <img src="figures/Heatmap_Stage_3_vs_Stage_1.png" width="300"/><br>
+      <sub><b>Figure 3C.</b> Stage 3 vs Stage 1</sub>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<b>Figure 3.</b> Heatmaps of the top 15 differentially expressed genes identified in pairwise Wald test comparisons. Samples cluster by developmental stage, and opposing expression patterns (blue to red) are observed across stages, reflecting stage-specific transcriptional regulation during biofilm development.
+
+</div>
+
+</div>
+Heatmaps of the top 15 differentially expressed genes were generated for each pairwise comparison to further examine stage-specific expression patterns are shown in Figures 3A–3C. Across all comparisons, biological replicates clustered by developmental stage, demonstrating consistent transcriptional profiles within conditions. Distinct opposing expression patterns were observed between stages, with genes upregulated in one stage often downregulated in another. For example, HXT17 exhibited clear stage-dependent regulation in the Stage 3 vs Stage 1 comparison, shown in Figure 3C, transitioning from lower expression in Stage 1 (blue) to higher expression in Stage 3 (red). This shift in expression highlights coordinated transcriptional remodeling across developmental progression.
 
 #### LRT Visualization
+
+<div align="center">
+<img src="figures/LRT.png" width="600"/>
+<br>
+<b>Figure 4.</b> Gene expression patterns of LRT-significant genes grouped by similar expression trajectories across Stage 1, Stage 2, and Stage 3. Values represent Z-scored gene expression levels.
+</div>
+<br/>
+A likelihood ratio test (LRT) was performed to identify genes that change significantly across all three developmental stages. Significant genes were grouped based on similar expression patterns (Figure 4).
+
+Group 1 genes (n = 346) showed high expression in Stage 1 followed by decreased expression in later stages. Group 3 genes (n = 523) displayed the opposite trend, with low expression in Stage 1 and 2 and increased expression in Stage 3. Groups 2 (n = 51) and 4 (n = 80) showed peak expression in Stage 2 before decreasing. These results demonstrate clear stage-dependent transcriptional changes during biofilm development.
 
 ### Functional Enrichment Analysis 
 
 #### ORA Visualizations
+
+Over-representation analysis (ORA) was performed on significantly differentially expressed genes identified in the Stage 3 vs Stage 1 comparison. The analysis was performed on the other comparison stages as well, but visualizations for those can be seen in the [`figures`](figures) directory.
+
+#### GO Biological Process - Stage 3 vs Stage 1 (Mature vs Thin Biofilm)
+
+<div align="center">
+<img src="figures/GOenrich_S3v1_upvsdown.png" width="750"/>
+<br>
+<b>Figure 5.</b> GO Biological Process over-representation analysis (ORA) of significantly upregulated and downregulated genes in the Stage 3 vs Stage 1 comparison. Dot size represents gene ratio, and color indicates adjusted p-value.
+</div>
+<br/>
+GO Biological Process enrichment revealed that genes upregulated in Stage 3 were significantly associated with mitochondrial organization and mitochondrial respiration, as shown in Figure 5. In contrast, downregulated genes were enriched for metabolic processes such as transmembrane transport, lipid metabolic process, and organic acid metabolic process. These results suggest substantial metabolic reprogramming between early and late stages of biofilm development.
+
 
 #### GSEA Visualizations
 
