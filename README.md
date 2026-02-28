@@ -26,7 +26,7 @@ To evaluate biological relevance, both over-representation analysis (ORA) and Ge
 All command-line software used in this analysis was executed using containerized environments for reproducibility and version control. Singularity was used to pull pre-built Docker images and convert them into `.sif` container files stored in a dedicated `containers/` directory. 
 
 #### 1.2 - Data Acquisition
-The Flor yeast samples were obtained from the NCBI Sequence Read Archive (SRA) and correspond to the yeast biofilm (velum) development study described in [1]. The Saccharomyces cerevisiae samples were collected at three stages of biofilm formation during wine aging:
+The Flor yeast samples were obtained from the NCBI Sequence Read Archive (SRA) and correspond to the yeast biofilm (velum) development study described in [1]. The _Saccharomyces cerevisiae_ samples were collected at three stages of biofilm formation during wine aging:
 
 * **Stage 1** (10 days) – SRR10551665, SRR10551664, SRR10551663
 * **Stage 2** (45 days) – SRR10551662, SRR10551661, SRR10551660
@@ -36,13 +36,13 @@ SRA files were retrieved using the prefetch command from the SRA Toolkit contain
 These SRA files were then converted to FASTQ format using fasterq-dump. The script can be seen in [`02_data.sh`](scripts/02_data.sh). The resulting FASTQ files were compressed for use in downstream quality control and transcript quantification.
 
 #### 1.3 - Reference Genome Reasoning
-The RNA-seq data analyzed in this study originate from the Saccharomyces cerevisiae L-329 strain described in [1]. However, transcript quantification was performed using the S288C reference transcriptome.
+The RNA-seq data analyzed in this study originate from the _Saccharomyces cerevisiae L-329_ strain described in [1]. However, transcript quantification was performed using the _S288C_ reference transcriptome.
 
-To validate this choice, [`00_refanalysis.sh`](scripts/00_refanalysis.sh) was used to assess sequence conservation between the L-329 strain and the S288C reference using BLAST. Results indicated that over 99% of queried sequences aligned to the S288C reference, with an average percent identity of approximately 80%, supporting substantial conservation across coding regions.
+To validate this choice, [`00_refanalysis.sh`](scripts/00_refanalysis.sh) was used to assess sequence conservation between the _L-329_ strain and the _S288C_ reference using BLAST. Results indicated that over 99% of queried sequences aligned to the _S288C_ reference, with an average percent identity of approximately 80%, supporting substantial conservation across coding regions.
 
-Although L-329 is the experimental strain, S288C was selected due to its well-annotated and curated genome assembly. Given the high alignment rate and strong sequence conservation, S288C provides an appropriate and biologically relevant reference for transcript quantification and downstream functional enrichment analyses.
+Although _L-329_ is the experimental strain, _S288C_ was selected due to its well-annotated and curated genome assembly. Given the high alignment rate and strong sequence conservation, _S288C_ provides an appropriate and biologically relevant reference for transcript quantification and downstream functional enrichment analyses.
 
-The S288C transcript FASTA file was therefore used for downstream analysis.
+The _S288C_ transcript FASTA file was therefore used for downstream analysis.
 
 ### 2.0 - Quality Control with FastQC
 
