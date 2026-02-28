@@ -182,9 +182,9 @@ GSEA was performed using ranked gene lists rather than applying a strict signifi
 
 </div>
 
-Raw sequencing reads from Stage 1 (Early), Stage 2 (Thin), and Stage 3 (Mature) samples were assessed using FastQC prior to downstream analysis. Average sequencing depth ranged from 6.1 to 8.2 million reads per sample, with a consistent read length of 50 bp (Table 1). No reads were flagged as poor quality.
+Raw sequencing reads from Stage 1 (Early), Stage 2 (Thin), and Stage 3 (Mature) samples were assessed using FastQC prior to downstream analysis. Sequencing depth ranged from 6.1 to 8.2 million reads per sample, with a consistent read length of 50 bp (Table 1). No reads were flagged as poor quality.
 
-Per-base sequence quality passed for all samples, and no adapter contamination was detected. GC content was consistent across stages (42–43%) and between biological replicates. Although per-base sequence content and duplication levels were flagged in several samples, these patterns are commonly observed in RNA-seq data due to transcript abundance bias. Overall, sequencing quality was sufficient to proceed with alignment and differential expression analysis.
+Per-base sequence quality passed for all samples, and no adapter contamination was detected. GC content was consistent across stages (42–43%) and between biological replicates. Although per-base sequence content and duplication levels were flagged in several samples, these patterns are commonly observed in RNA-seq data likely due to biological transcript abundance. Overall, sequencing quality was sufficient to proceed with alignment and differential expression analysis.
 
 ### Salmon Outputs
 Transcript-level quantification was performed using Salmon against the Saccharomyces cerevisiae _S288C_ reference transcriptome. Mapping rates were consistently high across samples, averaging 85.47% for Stage 1, 81.17% for Stage 2, and 83.11% for Stage 3. Individual replicate mapping rates ranged from 74.2% to 92.3%. These high alignment rates indicate efficient assignment of reads to annotated transcripts and support the suitability of the S288C reference genome for this dataset. Overall, the strong mapping performance provides confidence in downstream transcript quantification and differential expression analysis.
@@ -208,7 +208,7 @@ The first visualization performed for the differential gene analysis was the pri
 <b>Figure 2.</b> Volcano plot of differential expression analysis (Wald test) comparing Stage 3 and Stage 1. Red points represent significantly upregulated genes, blue points represent significantly downregulated genes, and gray points indicate non-significant genes.
 </div>
 <br>
-The volcano plot comparing Stage 3 and Stage 1, shown in Figure 2, demonstrates transcriptional changes, with numerous genes significantly upregulated and downregulated. The points are approximately symmetric around zero, indicating comparable numbers of genes exhibiting positive and negative log2fold changes. Several genes exhibit large fold changes and strong statistical significance.
+The volcano plot comparing Stage 3 and Stage 1, shown in Figure 2, demonstrates transcriptional changes, with numerous genes significantly upregulated and downregulated. The significant genes are approximately symmetric around zero, indicating comparable numbers of genes exhibiting positive and negative log2fold changes. Several genes exhibit large fold changes and strong statistical significance.
 <br>
 <br/>
 
@@ -238,7 +238,7 @@ The volcano plot comparing Stage 3 and Stage 1, shown in Figure 2, demonstrates 
 </div>
 
 </div>
-Heatmaps of the top 15 differentially expressed genes were generated for each pairwise comparison to further examine stage-specific expression patterns are shown in Figures 3A–3C. Across all comparisons, biological replicates clustered by developmental stage, demonstrating consistent transcriptional profiles within conditions. Distinct opposing expression patterns were observed between stages, with genes upregulated in one stage often downregulated in another. For example, HXT17 exhibited clear stage-dependent regulation in the Stage 3 vs Stage 1 comparison, shown in Figure 3C, transitioning from lower expression in Stage 1 (blue) to higher expression in Stage 3 (red). This shift in expression highlights coordinated transcriptional remodeling across developmental progression.
+Heatmaps of the top 15 differentially expressed genes were generated for each pairwise comparison to further examine stage-specific expression patterns, these are shown in Figures 3A–3C. Across all comparisons, biological replicates clustered by developmental stage, demonstrating consistent transcriptional profiles within conditions. Distinct opposing expression patterns were observed between stages, with genes upregulated in one stage often downregulated in another. For example, HXT17 exhibited clear stage-dependent regulation in the Stage 3 vs Stage 1 comparison, shown in Figure 3C, transitioning from lower expression in Stage 1 (blue) to higher expression in Stage 3 (red). This shift in expression highlights coordinated transcriptional remodeling across developmental progression.
 
 #### LRT Visualization
 
@@ -248,7 +248,7 @@ Heatmaps of the top 15 differentially expressed genes were generated for each pa
 <b>Figure 4.</b> Gene expression patterns of LRT-significant genes grouped by similar expression trajectories across Stage 1, Stage 2, and Stage 3. Values represent Z-scored gene expression levels.
 </div>
 <br/>
-A likelihood ratio test (LRT) was performed to identify genes that change significantly across all three developmental stages. Significant genes were grouped based on similar expression patterns shown in Figure 4. Group 1 genes (n = 346) showed high expression in Stage 1 followed by decreased expression in later stages. Group 3 genes (n = 523) displayed the opposite trend, with low expression in Stage 1 and 2 and increased expression in Stage 3. Groups 2 (n = 51) and 4 (n = 80) showed peak expression in Stage 2 before decreasing. These results demonstrate clear stage-dependent transcriptional changes during biofilm development.
+A likelihood ratio test (LRT) was performed to identify genes that change significantly across all three developmental stages. Significant genes were grouped based on similar expression patterns shown in Figure 4. Group 1 genes (n = 346) showed high expression in Stage 1 followed by decreased expression in later stages. Group 3 genes (n = 523) displayed the opposite trend, with low expression in Stage 1 and 2 and increased expression in Stage 3. Groups 2 (n = 51) and 4 (n = 80) showed peak expression in Stage 2 before decreasing. These trajectory patterns demonstrate clear stage-dependent transcriptional changes during biofilm development.
 
 ### Functional Enrichment Analysis 
 
@@ -323,7 +323,7 @@ Cluster 1 genes exhibited the highest mean expression in Stage 1, followed by de
 Dot size represents gene count and color indicates adjusted p-value (darker red = greater statistical significance).
 </div>
 <br/>
-Cluster 1 genes, which exhibited highest mean expression in Stage 1 followed by progressive reduction across later stages, were enriched formetabolic pathways including biosynthesis of secondary metabolites, carbon metabolism, and glycolysis/gluconeogenesis, shown in Figure 8A. In contrast, Cluster 3 genes show increasing expression across developmental progression and peak in Stage 3, and were enriched for pathways such as oxidative phosphorylation, proteasome, and biosynthesis of secondary metabolites, shown in Figure 8B. These enrichments indicate enhanced energy production and protein turnover in later stages of biofilm development.
+Cluster 1 genes, which exhibited highest mean expression in Stage 1 followed by progressive reduction across later stages, were enriched for metabolic pathways including biosynthesis of secondary metabolites, carbon metabolism, and glycolysis/gluconeogenesis, shown in Figure 8A. In contrast, Cluster 3 genes show increasing expression across developmental progression and peak in Stage 3, and were enriched for pathways such as oxidative phosphorylation, proteasome, and biosynthesis of secondary metabolites, shown in Figure 8B. These enrichments indicate enhanced energy production and protein turnover in later stages of biofilm development.
 
 #### GSEA Visualizations
 
@@ -341,7 +341,7 @@ Gene Set Enrichment Analysis (GSEA) was performed using genes ranked by the LRT 
 <b>Figure 10.</b> GSEA enrichment profile for the KEGG pathway biosynthesis of secondary metabolites derived from LRT-ranked genes, illustrating coordinated pathway-level enrichment.
 </div>
 <br/>
-Similarly, KEGG pathway analysis identified secondary metabolite biosynthesis as the top-enriched pathway, with an NES = 1.38 and an adjusted p-value = 1.07 × 10⁻⁸, shown in Figure 10. The strong enrichment signal reflects substantial metabolic reprogramming during biofilm progression. These GSEA findings are consistent with overrepresentation analyses and further support stage-dependent metabolic remodeling.
+Similarly, KEGG pathway analysis identified secondary metabolite biosynthesis as the top-enriched pathway, with an NES = 1.38 and an adjusted p-value = 1.07 × 10⁻⁸, shown in Figure 10. These results reinforce the coordinated metabolic shifts observed in ORA analyses. These GSEA findings are consistent with overrepresentation analyses and further support stage-dependent metabolic remodeling.
 
 ## Discussion 
 
