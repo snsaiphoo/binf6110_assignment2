@@ -233,7 +233,7 @@ for (comp in comparisons) {
            annotation_col = annotation_df,
            show_rownames = TRUE,
            show_colnames = FALSE,
-           main = paste("Top 20 DE Genes:", contrast_name)
+           main = paste("Top 15 DE Genes:", contrast_name)
   )
   
   dev.off()
