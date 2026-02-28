@@ -194,13 +194,45 @@ Transcript-level quantification was performed using Salmon against the Saccharom
 #### Wald Test Visualizations 
 <div align="center">
 
-<img src="figures/PCA_plot.png" width="700"/>
+<img src="figures/PCA_plot.png" width="600"/>
 
 **Figure 1.** Principal component analysis (PCA) of variance-stabilized counts across all developmental stages. PC1 explains 71% of the variance and separates Stage 1 from later stages, while PC2 explains 24% of the variance.
 
 </div>
 
 The first visualization performed for the differential gene analysis was the principal component analysis (PCA) for the three stages. Figure 1 revealed clear clustering among the three developmental stages. PC1 accounted for 71% of the variance and separated Stage 1, while PC2 explained 24% and distinguished Stage 2 from Stage 3. Biological replicates clustered closely within each condition, demonstrating high reproducibility and minimal technical variation.
+
+<div align="center">
+
+<img src="figures/Volcano_Stage_3%20vs%20Stage_1.png" width="600"/>
+
+**Figure 2.** Volcano plot of differential expression analysis (Wald test) comparing Stage 3 and Stage 1. Red points represent significantly upregulated genes, blue points represent significantly downregulated genes, and gray points indicate non-significant genes.
+
+</div>
+
+The volcano plot comparing Stage 3 and Stage 1, shown in Figure 2, demonstrates transcriptional changes, with numerous genes significantly upregulated and downregulated. The points are approximately symmetric around zero, indicating comparable numbers of genes exhibiting positive and negative log2fold changes. Several genes exhibit large fold changes and strong statistical significance.
+
+<div align="center">
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="figures/Heatmap_Stage_2_vs_Stage_1.png" width="300"/><br>
+      <sub><b>Figure 3A.</b> Stage 2 vs Stage 1</sub>
+    </td>
+    <td align="center">
+      <img src="figures/Heatmap_Stage_3_vs_Stage_2.png" width="300"/><br>
+      <sub><b>Figure 3B.</b> Stage 3 vs Stage 2</sub>
+    </td>
+    <td align="center">
+      <img src="figures/Heatmap_Stage_3_vs_Stage_1.png" width="300"/><br>
+      <sub><b>Figure 3C.</b> Stage 3 vs Stage 1</sub>
+    </td>
+  </tr>
+</table>
+
+</div>
+
 
 #### LRT Visualization
 
