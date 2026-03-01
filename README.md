@@ -333,15 +333,14 @@ Cluster 1 genes, which exhibited highest mean expression in Stage 1 followed by 
 <div align="center">
 <img src="figures/GSEA_GO_LRT_top_pathway.png" width="600"/>
 <br>
-<b>Figure 9.</b> GSEA enrichment profile for the GO term carbohydrate metabolic process based on LRT-ranked genes. The running enrichment score (green) and gene positions (black ticks) are shown across the ranked gene list.
-</div>
+<b>Figure 9.</b> GSEA enrichment profile for the GO term carbohydrate metabolic process based on LRT-ranked genes. The running enrichment score (green) rises sharply near the left side of the ranked gene list, reflecting the clustering of pathway genes (black ticks) among highly ranked genes with strong stage-dependent expression changes. This pattern indicates coordinated regulation of carbohydrate metabolism across biofilm development.
 <br/>
 Gene Set Enrichment Analysis (GSEA) was performed using genes ranked by the LRT statistic to identify pathways exhibiting coordinated stage-dependent expression changes. The GO Biological Process term carbohydrate metabolic process showed significant positive enrichment, with NES = 1.40 and adjusted p-value = 1.04 × 10⁻⁶, as shown in Figure 9, indicating coordinated regulation of genes involved in carbohydrate metabolism across developmental stages.
 
 <div align="center">
 <img src="figures/GSEA_KEGG_LRT_top_pathway.png" width="600"/>
 <br>
-<b>Figure 10.</b> GSEA enrichment profile for the KEGG pathway biosynthesis of secondary metabolites derived from LRT-ranked genes, illustrating coordinated pathway-level enrichment.
+<b>Figure 10.</b> GSEA enrichment profile for the KEGG pathway biosynthesis of secondary metabolites derived from LRT-ranked genes. The running enrichment score (green) increases sharply near the left side of the ranked gene list, reflecting the clustering of pathway genes (black ticks) among highly ranked genes with strong stage-dependent expression changes. This pattern indicates coordinated pathway-level regulation across biofilm development.
 </div>
 <br/>
 Similarly, KEGG pathway analysis identified secondary metabolite biosynthesis as the top-enriched pathway, with an NES = 1.38 and an adjusted p-value = 1.07 × 10⁻⁸, shown in Figure 10. These results reinforce the coordinated metabolic shifts observed in ORA analyses. These GSEA findings are consistent with overrepresentation analyses and further support stage-dependent metabolic remodeling.
@@ -349,7 +348,7 @@ Similarly, KEGG pathway analysis identified secondary metabolite biosynthesis as
 <br/>
 <div align="center">
 
-**Table 2**. LRT GSEA – Top Enriched GO and KEGG Pathways
+**Table 2**. LRT GSEA – Top Enriched GO and KEGG Pathways Statistics
 
 </div>
 
@@ -373,9 +372,9 @@ GO over-representation analysis of Cluster 1 showed enrichment for monocarboxyli
 In contrast, Cluster 3 was enriched for carbohydrate metabolic process, generation of precursor metabolites and energy, energy derivation by oxidation of organic compounds, and mitochondrion organization, as shown in Figure 7B, with KEGG pathways including oxidative phosphorylation and proteasome, as shown in Figure 8B. The progressive increase of these pathways supports enhanced respiratory metabolism and protein quality control during biofilm maturation [1, 24, 26], highlighting coordinated physiological adaptation across development.
 
 #### GSEA LRT 
-To further evaluate coordinated pathway-level regulation, GSEA was performed using genes ranked by LRT statistics. The top enriched GO pathway was carbohydrate metabolic process, as shown in Figure 9, with a normalized enrichment score of 1.40 and an adjusted p-value of 1.04 × 10⁻⁶. KEGG GSEA identified biosynthesis of secondary metabolites as the most significantly enriched pathway, as shown in Figure 10, with a normalized enrichment score of 1.38 and an adjusted p-value of 1.07 × 10⁻⁸. Additional enriched KEGG pathways included glycolysis/gluconeogenesis, pyruvate metabolism, carbon metabolism, and the citrate cycle, confirming coordinated regulation of central carbon metabolism during biofilm progression [23, 24].
+To further evaluate coordinated pathway-level regulation, GSEA was performed using genes ranked by LRT statistics. The top enriched GO pathway was carbohydrate metabolic process, as shown in Figure 9, with a normalized enrichment score of 1.40 and an adjusted p-value of 1.04 × 10⁻⁶. In Figure 9, the vertical black tick marks represent genes belonging to the carbohydrate metabolic process pathway, plotted according to their position in the ranked gene list. The noticeable clustering of these ticks toward the left side indicates that many of these genes are ranked highly based on their LRT statistics, meaning they show strong stage-dependent expression changes. This concentration produces the sharp rise in the green running enrichment score at the beginning of the plot and results in a positive enrichment score, reflecting coordinated regulation of this pathway across biofilm development.
 
-The strong enrichment of glycolytic and carbohydrate pathways is consistent with the early-stage metabolic activity observed in the Wald analysis. Glycolysis provides rapid ATP generation and metabolic intermediates required for biomass production and cellular establishment, processes that are essential during initial biofilm formation. The relative shift toward oxidative pathways in later stages supports a metabolic transition as the biofilm matures.
+KEGG GSEA identified biosynthesis of secondary metabolites as the most significantly enriched pathway, as shown in Figure 10, with a normalized enrichment score of 1.38 and an adjusted p-value of 1.07 × 10⁻⁸. Similar to Figure 9, the dense accumulation of black tick marks toward the left indicates that many genes within this pathway are highly ranked based on their LRT statistics, producing an early peak in the running enrichment score. Together, these patterns demonstrate that genes involved in carbohydrate and secondary metabolism are collectively and significantly regulated across biofilm development.
 
 These findings are also consistent with transcriptomic studies of _Saccharomyces cerevisiae_ biofilms, which report activation of carbohydrate metabolism during development [25]. Core enrichment genes such as YMR105C (PGM2) [27], which is involved in gluconeogenesis and trehalose biosynthesis during biofilm formation [25], and additional leading-edge genes, including YJL052W and YCR012W, contributed to multiple enriched pathways. This overlap indicates coordinated regulation of central metabolic processes rather than isolated gene-specific changes.
 
