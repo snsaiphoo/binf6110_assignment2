@@ -342,6 +342,19 @@ Gene Set Enrichment Analysis (GSEA) was performed using genes ranked by the LRT 
 </div>
 <br/>
 Similarly, KEGG pathway analysis identified secondary metabolite biosynthesis as the top-enriched pathway, with an NES = 1.38 and an adjusted p-value = 1.07 × 10⁻⁸, shown in Figure 10. These results reinforce the coordinated metabolic shifts observed in ORA analyses. These GSEA findings are consistent with overrepresentation analyses and further support stage-dependent metabolic remodeling.
+<br/>
+<br/>
+<div align="center">
+
+**Table 2**. LRT GSEA – Top Enriched GO and KEGG Pathways
+
+</div>
+
+| Database | ID        | Description                              | NES  | Adjusted p-value | Top 10 Core Genes |
+|----------|-----------|------------------------------------------|------|------------------|-------------------|
+| GO       | GO:0005975 | carbohydrate metabolic process          | 1.40 | 1.04 × 10⁻⁶ | YEL070W, YJL052W, YNR071C, YKR097W, YNR073C, YCR012W, YMR145C, YHR174W, YMR105C, YOR047C |
+| KEGG     | sce01110  | Biosynthesis of secondary metabolites    | 1.38 | 1.07 × 10⁻⁸ | YGR087C, YCR105W, YJL052W, YGR088W, YBR117C, YKR097W, YCR012W, YGR060W, YHR174W, YMR105C |
+
 
 ## Discussion 
 #### Wald DGE and Enrichment
