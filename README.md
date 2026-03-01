@@ -25,7 +25,10 @@ To evaluate biological relevance, both over-representation analysis (ORA) and Ge
 #### 1.1 - Containers
 All command-line software used in this analysis was executed using containerized environments for reproducibility and version control. Singularity was used to pull pre-built Docker images and convert them into `.sif` container files stored in a dedicated `containers/` directory. 
 
-#### 1.2 - Data Acquisition
+#### 1.2 - R Environment (For Step 4.0)
+All analyses were performed in `R` using packages from `CRAN` and `Bioconductor`. `Bioconductor` packages included `tximport`, `DESeq2`, `GenomicFeatures`, `org.Sc.sgd.db`, `AnnotationDbi`, `DEGreport`, `apeglm`, `clusterProfiler`, `enrichplot`, and `DOSE` for analysis. Additional `CRAN` packages, including `tidyverse`, `here`, and `pheatmap`, were used for data manipulation and visualization. `Bioconductor` packages were installed using `BiocManager::install()`, and `CRAN` packages were installed using `install.packages()`.
+
+#### 1.3 - Data Acquisition
 The Flor yeast samples were obtained from the NCBI Sequence Read Archive (SRA) and correspond to the yeast biofilm (velum) development study described in [1]. The _Saccharomyces cerevisiae_ samples were collected at three stages of biofilm formation during wine aging:
 
 * **Stage 1** (10 days) – SRR10551665, SRR10551664, SRR10551663
@@ -35,7 +38,7 @@ The Flor yeast samples were obtained from the NCBI Sequence Read Archive (SRA) a
 SRA files were retrieved using the prefetch command from the SRA Toolkit container. The script can be seen in [`01_data.sh`](scripts/01_data.sh).
 These SRA files were then converted to FASTQ format using fasterq-dump. The script can be seen in [`02_data.sh`](scripts/02_data.sh). The resulting FASTQ files were compressed for use in downstream quality control and transcript quantification.
 
-#### 1.3 - Reference Genome Reasoning
+#### 1.4 - Reference Genome Reasoning
 The RNA-seq data analyzed in this study originate from the _Saccharomyces cerevisiae L-329_ strain described in [1]. However, transcript quantification was performed using the _S288C_ reference transcriptome.
 
 To validate this choice, [`00_refanalysis.sh`](scripts/00_refanalysis.sh) was used to assess sequence conservation between the _L-329_ [16] strain and the _S288C_ reference using BLAST. Results indicated that over 99% of queried sequences aligned to the _S288C_ reference [17], with an average percent identity of approximately 80%, supporting substantial conservation across coding regions.
