@@ -21,7 +21,7 @@ Differential expression analysis was performed using `DESeq2` [10]. This was sel
 To evaluate biological relevance, both over-representation analysis (ORA) and Gene Set Enrichment Analysis (GSEA) were conducted using `clusterProfiler` [14]. ORA identifies enriched Gene Ontology (GO) terms and KEGG pathways based on predefined lists of differentially expressed genes, whereas GSEA assesses enrichment across ranked gene lists without requiring an arbitrary cutoff, allowing detection of coordinated but subtle pathway-level changes [15]. While each statistical and enrichment method has limitations, such as including sensitivity to model assumptions and threshold selection, the combined use of complementary approaches strengthens confidence in the biological interpretation of flor yeast transcriptional regulation during biofilm maturation.
 
 ## Methods 
-The following section describes the detailed methods used for the _Saccharomyces cerevisiae_. To execute the pipeline, download the [`scripts`](scripts) directory into your workspace. The `.sh` scripts should first be run sequentially in a Linux terminal, beginning with `00_ `and proceeding in numerical order. These scripts perform preprocessing and quantification steps, and output directories will be generated automatically at each stage. Once quantification is complete, the resulting count or quant files should be imported into `RStudio` for downstream analysis. The scripts are numbered to ensure they are followed sequentially.
+The following section describes methods for analyzing  _Saccharomyces cerevisiae_ RNA-seq data. To execute the pipeline, download the [`scripts`](scripts) directory into your workspace. The `.sh` scripts should first be run sequentially in a Linux terminal, beginning with `00_ `and proceeding in numerical order. These scripts perform preprocessing and quantification steps, and output directories will be generated automatically at each stage. Once quantification is complete, the resulting count or quant files should be imported into `R` for downstream analysis. 
 
 ### 1.0 - Data and Tools
 #### 1.1 - Containers
@@ -338,7 +338,7 @@ Cluster 1 genes, which exhibited highest mean expression in Stage 1 followed by 
 <b>Figure 9.</b> GSEA enrichment profile for the GO term carbohydrate metabolic process based on LRT-ranked genes. The running enrichment score (green) rises sharply near the left side of the ranked gene list, reflecting the clustering of pathway genes (black ticks) among highly ranked genes with strong stage-dependent expression changes. This pattern indicates coordinated regulation of carbohydrate metabolism across biofilm development.
 <br/>
 </div>
-
+<br/>
 Gene Set Enrichment Analysis (GSEA) was performed using genes ranked by the LRT statistic to identify pathways exhibiting coordinated stage-dependent expression changes. The GO Biological Process term carbohydrate metabolic process showed significant positive enrichment, with NES = 1.40 and adjusted p-value = 1.04 × 10⁻⁶, as shown in Figure 9, indicating coordinated regulation of genes involved in carbohydrate metabolism across developmental stages.
 
 <div align="center">
