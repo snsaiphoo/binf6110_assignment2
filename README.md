@@ -18,7 +18,7 @@ Because transcript isoforms often overlap, short RNA-seq reads may originate fro
 
 Differential expression analysis was performed using `DESeq2` [10]. This was selected over `edgeR` [11] and `limma-voom` [12] because it models count data using a negative binomial distribution, which is appropriate for RNA-seq data [10, 13], and performs internal normalization of raw counts, simplifying the workflow. Wald tests were used for pairwise stage comparisons, and likelihood ratio tests (LRTs) were used to detect genes with significant expression changes across multiple stages [10].
 
-To evaluate biological relevance, both over-representation analysis (ORA) and Gene Set Enrichment Analysis (GSEA) were performed using the `clusterProfile`r package [14]. ORA identifies enriched functional categories based on a predefined list of significantly differentially expressed genes, whereas GSEA evaluates enrichment across a ranked gene list without requiring a statistical cutoff, enabling detection of coordinated but moderate expression shifts [15]. Enrichment analyses were conducted against both Gene Ontology (GO) and KEGG pathway databases. GO analysis characterizes overrepresented biological processes, molecular functions, and cellular components, while KEGG analysis maps differentially expressed genes onto curated metabolic and signaling pathways. The combined use of complementary statistical approaches and annotation frameworks enhances the robustness and biological interpretability of transcriptional changes observed during flor yeast biofilm maturation.
+To evaluate biological relevance, both over-representation analysis (ORA) and Gene Set Enrichment Analysis (GSEA) were performed using the `clusterProfiler` package [14]. ORA identifies enriched functional categories based on a predefined list of significantly differentially expressed genes, whereas GSEA evaluates enrichment across a ranked gene list without requiring a statistical cutoff, enabling detection of coordinated but moderate expression shifts [15]. Enrichment analyses were conducted against both Gene Ontology (GO) and KEGG pathway databases. GO analysis characterizes overrepresented biological processes, molecular functions, and cellular components, while KEGG analysis maps differentially expressed genes onto curated metabolic and signaling pathways. The combined use of complementary statistical approaches and annotation frameworks enhances the robustness and biological interpretability of transcriptional changes observed during flor yeast biofilm maturation.
 
 ## Methods 
 The following section describes methods for analyzing  _Saccharomyces cerevisiae_ RNA-seq data. To execute the pipeline, download the [`scripts`](scripts) directory into your workspace. The `.sh` scripts should first be run sequentially in a Linux terminal, beginning with `00_ `and proceeding in numerical order. These scripts perform preprocessing and quantification steps, and output directories will be generated automatically at each stage. Once quantification is complete, the resulting count or quant files should be imported into `R` for downstream analysis. 
@@ -28,7 +28,7 @@ The following section describes methods for analyzing  _Saccharomyces cerevisiae
 All command-line software used in this analysis was executed using containerized environments for reproducibility and version control. Singularity was used to pull pre-built Docker images and convert them into `.sif` container files stored in a dedicated `containers/` directory. 
 
 #### 1.2 - R Environment (For Step 4.0)
-All required CRAN and Bioconductor dependencies can be installed by running the [`00_packages.R`](scripts/00_packages.R) script provided in this repository.
+Analysis was run with R version 4.5.1. All required CRAN and Bioconductor dependencies, including version numbers, can be installed by running the [`00_packages.R`](scripts/00_packages.R) script in this repository.
 
 #### 1.3 - Data Acquisition
 The Flor yeast samples were obtained from the NCBI Sequence Read Archive (SRA) and correspond to the yeast biofilm (velum) development study described in [1]. The _Saccharomyces cerevisiae_ samples were collected at three stages of biofilm formation during wine aging:
@@ -37,13 +37,13 @@ The Flor yeast samples were obtained from the NCBI Sequence Read Archive (SRA) a
 * **Stage 2** (45 days) – SRR10551662, SRR10551661, SRR10551660
 * **Stage 3** (71 days) – SRR10551659, SRR10551658, SRR10551657
 
-SRA files were retrieved using the prefetch command from the SRA Toolkit container. The script can be seen in [`01_data.sh`](scripts/01_data.sh).
+SRA files were retrieved using the prefetch command from the SRA Toolkit version 3.2.1 container. The script can be seen in [`01_data.sh`](scripts/01_data.sh).
 These SRA files were then converted to FASTQ format using fasterq-dump. The script can be seen in [`02_data.sh`](scripts/02_data.sh). The resulting FASTQ files were compressed for use in downstream quality control and transcript quantification.
 
 #### 1.4 - Reference Genome Reasoning
 The RNA-seq data analyzed in this study originate from the _Saccharomyces cerevisiae L-329_ strain described in [1]. However, transcript quantification was performed using the _S288C_ reference transcriptome.
 
-To validate this choice, [`00_refanalysis.sh`](scripts/00_refanalysis.sh) was used to assess sequence conservation between the _L-329_ [16] strain and the _S288C_ reference using BLAST. Results indicated that over 99% of queried sequences aligned to the _S288C_ reference [17], with an average percent identity of approximately 80%, supporting substantial conservation across coding regions.
+To validate this choice, [`00_refanalysis.sh`](scripts/00_refanalysis.sh) was used to assess sequence conservation between the _L-329_ [16] strain and the _S288C_ reference using BLAST version 2.2.31. Results indicated that over 99% of queried sequences aligned to the _S288C_ reference [17], with an average percent identity of approximately 80%, supporting substantial conservation across coding regions.
 
 Although _L-329_ is the experimental strain, _S288C_ was selected due to its well-annotated and curated genome assembly. Given the high alignment rate and strong sequence conservation, _S288C_ provides an appropriate and biologically relevant reference for transcript quantification and downstream functional enrichment analyses.
 
@@ -395,7 +395,10 @@ KEGG GSEA identified biosynthesis of secondary metabolites as the most significa
 
 These findings are also consistent with transcriptomic studies of _Saccharomyces cerevisiae_ biofilms, which report activation of carbohydrate metabolism during development [25]. Core enrichment genes such as YMR105C (PGM2) [27], which is involved in gluconeogenesis and trehalose biosynthesis during biofilm formation [25], and additional leading-edge genes, including YJL052W and YCR012W, contributed to multiple enriched pathways. This overlap indicates coordinated regulation of central metabolic processes rather than isolated gene-specific changes.
 
-#### Conclusion
+### Conclusion
+Collectively, these analyses demonstrate that flor yeast biofilm maturation involves coordinated and stage-dependent metabolic reprogramming. Across differential expression testing, clustering, and enrichment analyses, a consistent pattern emerged in which early biofilm stages are associated with central carbon metabolism, whereas later stages show increased respiratory activity and protein turnover.
+
+GO and KEGG enrichment results were biologically consistent, with broad functional categories corresponding directly to specific metabolic pathways. For example, carbohydrate metabolic process encompasses glycolysis and gluconeogenesis, while energy derivation by oxidation of organic compounds aligns with oxidative phosphorylation and the citrate cycle. ORA identified these pathways among strongly differentially expressed genes, whereas GSEA detected enrichment of carbohydrate metabolism and secondary metabolite biosynthesis across the full ranked gene list. Because these approaches rely on different statistical frameworks, their agreement indicates that many genes within these pathways change together across development rather than reflecting isolated gene-level effects.
 
 
 ## References
@@ -412,7 +415,7 @@ These findings are also consistent with transcriptomic studies of _Saccharomyces
 [11] M. D. Robinson, D. J. McCarthy, and G. K. Smyth, “edgeR: a Bioconductor package for differential expression analysis of digital gene expression data,” Bioinformatics, vol. 26, no. 1, pp. 139–140, Nov. 2009, doi: https://doi.org/10.1093/bioinformatics/btp616. <br/>
 [12] C. W. Law, Y. Chen, W. Shi, and G. K. Smyth, “voom: precision weights unlock linear model analysis tools for RNA-seq read counts,” Genome Biology, vol. 15, no. 2, p. R29, 2014, doi: https://doi.org/10.1186/gb-2014-15-2-r29. <br/>
 [13] S. Liu, Z. Wang, R. Zhu, F. Wang, Y. Cheng, and Y. Liu, “Three Differential Expression Analysis Methods for RNA Sequencing: limma, EdgeR, DESeq2,” Journal of Visualized Experiments, no. 175, Sep. 2021, doi: https://doi.org/10.3791/62528.<br/>
-[14] G. Yu, L.-G. Wang, Y. Han, and Q.-Y. He, “clusterProfiler: an R Package for Comparing Biological Themes Among Gene Clusters,” OMICS: A Journal of Integrative Biology, vol. 16, no. 5, pp. 284–287, May 2012, doi: https://doi.org/10.1089/omi.2011.0118. <br/>
+[14] “clusterProfiler package - RDocumentation,” Rdocumentation.org, 2017. https://www.rdocumentation.org/packages/clusterProfiler/versions/3.0.4 (accessed Mar. 01, 2026). <br/>
 [15] A. Subramanian et al., “Gene Set Enrichment analysis: a knowledge-based Approach for Interpreting genome-wide Expression Profiles,” Proceedings of the National Academy of Sciences, vol. 102, no. 43, pp. 15545–15550, Sep. 2005, doi: https://doi.org/10.1073/pnas.0506580102. <br/>
 [16] “Saccharomyces cerevisiae S288C genome assembly R64,” NCBI. https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000146045.2/ <br/>
 [17] “Saccharomyces cerevisiae genome assembly ASM304674v1,” NCBI, 2026. https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_003046745.1/ (accessed Feb. 28, 2026). <br/>
