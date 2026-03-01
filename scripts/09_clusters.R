@@ -250,6 +250,8 @@ print(
 dev.off()
 
 
+gsea_go@result[1, ]
+
 ### KEGG GSEA for LRT-ranked gene list ####
 
 gene_list <- res_LRT$stat
