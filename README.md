@@ -207,13 +207,26 @@ Transcript-level quantification was performed using Salmon against the _Saccharo
 The first visualization performed for the differential gene analysis was the principal component analysis (PCA) for the three stages. Figure 1 revealed clear clustering among the three developmental stages. PC1 accounted for 71% of the variance and separated Stage 1, while PC2 explained 24% and distinguished Stage 2 from Stage 3. Biological replicates clustered closely within each condition, demonstrating high reproducibility and minimal technical variation.
 
 #### Wald Test Visualizations 
-<div align="center">
-<img src="figures/Volcano_Stage_3%20vs%20Stage_1.png" width="600"/>
-   <br>
-<b>Figure 2.</b> Volcano plot of differential expression analysis (Wald test) comparing Stage 3 and Stage 1. Red points represent significantly upregulated genes, blue points represent significantly downregulated genes, and gray points indicate non-significant genes.
+<div align="center" style="display: flex; justify-content: center; gap: 20px;">
+
+  <img src="figures/Volcano_Stage_2%20vs%20Stage_1.png" width="300"/>
+  <img src="figures/Volcano_Stage_3%20vs%20Stage_1.png" width="300"/>
+  <img src="figures/Volcano_Stage_3%20vs%20Stage_2.png" width="300"/>
+
 </div>
+
 <br>
-The volcano plot comparing Stage 3 and Stage 1, shown in Figure 2, demonstrates transcriptional changes, with numerous genes significantly upregulated and downregulated. The significant genes are approximately symmetric around zero, indicating comparable numbers of genes exhibiting positive and negative log2fold changes. Several genes exhibit large fold changes and strong statistical significance.
+
+<div align="center">
+<b>Figure 2.</b> Volcano plots of differential gene expression analysis (DESeq2 Wald test) comparing transcriptional changes across developmental stages. 
+Left: Stage 2 vs Stage 1; Middle: Stage 3 vs Stage 1; Right: Stage 3 vs Stage 2. 
+The x-axis represents log2 fold change (log2FC), indicating magnitude and direction of differential expression, while the y-axis shows −log10 adjusted p-value, reflecting statistical significance. 
+Red points denote significantly upregulated genes (adjusted p-value < 0.05 and positive log2FC), blue points denote significantly downregulated genes (adjusted p-value < 0.05 and negative log2FC), and gray points represent non-significant genes. 
+An increasing spread of significant genes from Stage 1 to Stage 3 suggests progressive transcriptional remodeling during development.
+</div>
+   
+<br>
+The volcano plots in Figure 2 display differential gene expression for all pairwise comparisons (Stage 2 vs Stage 1, Stage 3 vs Stage 1, and Stage 3 vs Stage 2). Each comparison shows numerous significantly upregulated and downregulated genes distributed on both sides of zero, indicating differential expression in both directions. The Stage 3 vs Stage 1 contrast exhibits the greatest spread of log2 fold changes and −log10 adjusted p-values, while Stage 2 vs Stage 1 shows a more moderate distribution. The Stage 3 vs Stage 2 comparison demonstrates continued differential expression between the later stages, though with a narrower overall range than Stage 3 vs Stage 1.
 <br>
 <br/>
 
