@@ -26,7 +26,7 @@ To evaluate biological relevance, both over-representation analysis (ORA) and Ge
 All command-line software used in this analysis was executed using containerized environments for reproducibility and version control. Singularity was used to pull pre-built Docker images and convert them into `.sif` container files stored in a dedicated `containers/` directory. 
 
 #### 1.2 - R Environment (For Step 4.0)
-All analyses were performed in `R` using packages from `CRAN` and `Bioconductor`. `Bioconductor` packages included `tximport`, `DESeq2`, `GenomicFeatures`, `org.Sc.sgd.db`, `AnnotationDbi`, `DEGreport`, `apeglm`, `clusterProfiler`, `enrichplot`, and `DOSE` for analysis. Additional `CRAN` packages, including `tidyverse`, `here`, and `pheatmap`, were used for data manipulation and visualization. `Bioconductor` packages were installed using `BiocManager::install()`, and `CRAN` packages were installed using `install.packages()`.
+All required CRAN and Bioconductor dependencies can be installed by running the [`00_packages.R`](scripts/00_packages.R) script provided in this repository.
 
 #### 1.3 - Data Acquisition
 The Flor yeast samples were obtained from the NCBI Sequence Read Archive (SRA) and correspond to the yeast biofilm (velum) development study described in [1]. The _Saccharomyces cerevisiae_ samples were collected at three stages of biofilm formation during wine aging:
