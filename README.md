@@ -58,7 +58,7 @@ Eight threads were used to improve computational efficiency. The full code can b
 Transcript-level abundance estimation was performed using `Salmon` version 1.10.3 in quasi-mapping mode within a containerized environment [20].
 
 #### 3.1 - Transcript Index 
-A transcriptome index was first generated from the _Saccharomyces cerevisiae S288C_ strain transcriptome (strain S288C). As mentioned, the FASTA file corresponding to the _S288C_ reference assembly was used for index construction:
+A transcriptome index was first generated from the _Saccharomyces cerevisiae S288C_ strain transcriptome. As mentioned, the FASTA file corresponding to the _S288C_ reference assembly was used for index construction:
 
 ```
 apptainer exec containers/salmon.sif salmon index \
@@ -166,7 +166,7 @@ ORA was performed using significantly differentially expressed genes from the Wa
 For the LRT analysis, significant genes were clustered based on shared expression patterns (Section 5.2). ORA was then performed independently for each cluster in [`09_clusters.R`](scripts/09_clusters.R) to identify biological pathways.
 
 #### 6.2 - Gene Set Enrichment Analysis (GSEA): GO & KEGG
-GSEA was performed using ranked gene lists rather than applying a strict significance cutoff. For Wald results, genes were ranked by log2 fold change and analyzed using gseGO() and gseKEGG() in [`08_functional_analysis.R`](scripts/08_functional_analysis.R). For the LRT analysis, genes were ranked by the LRT test statistic, and GSEA was performed in [`09_clusters.R`](scripts/09_clusters.R) to identify pathways associated with overall stage-dependent expression changes. Enrichment results were visualized using dot plots and enrichment plots.
+GSEA was performed using ranked gene lists rather than applying a strict significance cutoff. For Wald results, genes were ranked by log2 fold change and analyzed using `gseGO()` and `gseKEGG()` in [`08_functional_analysis.R`](scripts/08_functional_analysis.R). For the LRT analysis, genes were ranked by the LRT test statistic, and GSEA was performed in [`09_clusters.R`](scripts/09_clusters.R) to identify pathways associated with overall stage-dependent expression changes. Enrichment results were visualized using dot plots and enrichment plots.
 
 # Results
 ### FastQC 
@@ -387,6 +387,8 @@ In contrast, GO ORA of Cluster 3 showed enrichment for carbohydrate metabolic pr
 [22] “Welcome To Zscaler Directory Authentication,” Github.io, 2025. https://hbctraining.github.io/DGE_workshop_salmon/lessons/08_DGE_LRT.html <br/>
 [23] T. Pisithkul et al., “Metabolic Remodeling during Biofilm Development of Bacillus subtilis,” mBio, vol. 10, no. 3, Jun. 2019, doi: https://doi.org/10.1128/mBio.00623-19. <br/>
 [24] Y. Jiang et al., “Cell Cycle Progression Influences Biofilm Formation in Saccharomyces cerevisiae 1308,” Microbiology Spectrum, vol. 10, no. 3, Jun. 2022, doi: https://doi.org/10.1128/spectrum.02765-21. <br/>
+[25] Z. Li et al., “Involvement of glycolysis/gluconeogenesis and signaling regulatory pathways in Saccharomyces cerevisiae biofilms during fermentation,” Frontiers in Microbiology, vol. 6, Feb. 2015, doi: https://doi.org/10.3389/fmicb.2015.00139. <br/>
+[26] J. Moreno-García, T. García-Martínez, J. Moreno, and J. C. Mauricio, “Proteins involved in flor yeast carbon metabolism under biofilm formation conditions,” Food Microbiology, vol. 46, pp. 25–33, Apr. 2015, doi: https://doi.org/10.1016/j.fm.2014.07.001. <br/>
 
 
 
