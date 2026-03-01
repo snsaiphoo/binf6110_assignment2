@@ -248,7 +248,7 @@ Heatmaps of the top 15 differentially expressed genes were generated for each pa
 <div align="center">
 <img src="figures/LRT.png" width="600"/>
 <br>
-<b>Figure 4.</b> Gene expression patterns of LRT-significant genes grouped by similar expression trajectories across Stage 1, Stage 2, and Stage 3. Values represent Z-scored gene expression levels.
+<b>Figure 4.</b>Expression trajectories of LRT-significant genes clustered by similar temporal patterns across Stage 1, Stage 2, and Stage 3. Each panel represents a gene cluster, with individual gene profiles shown as lines and summarized by boxplots at each stage. Values are Z-scored expression levels to emphasize relative changes over time. The clusters illustrate distinct patterns, including decreasing, increasing, and stage-specific expression trends during biofilm development.
 </div>
 <br/>
 A likelihood ratio test (LRT) was performed to identify genes that change significantly across all three developmental stages. Significant genes were grouped based on similar expression patterns shown in Figure 4. Group 1 genes (n = 346) showed high expression in Stage 1 followed by decreased expression in later stages. Group 3 genes (n = 523) displayed the opposite trend, with low expression in Stage 1 and 2 and increased expression in Stage 3. Groups 2 (n = 51) and 4 (n = 80) showed peak expression in Stage 2 before decreasing. These trajectory patterns demonstrate clear stage-dependent transcriptional changes during biofilm development.
@@ -335,6 +335,8 @@ Cluster 1 genes, which exhibited highest mean expression in Stage 1 followed by 
 <br>
 <b>Figure 9.</b> GSEA enrichment profile for the GO term carbohydrate metabolic process based on LRT-ranked genes. The running enrichment score (green) rises sharply near the left side of the ranked gene list, reflecting the clustering of pathway genes (black ticks) among highly ranked genes with strong stage-dependent expression changes. This pattern indicates coordinated regulation of carbohydrate metabolism across biofilm development.
 <br/>
+</div>
+
 Gene Set Enrichment Analysis (GSEA) was performed using genes ranked by the LRT statistic to identify pathways exhibiting coordinated stage-dependent expression changes. The GO Biological Process term carbohydrate metabolic process showed significant positive enrichment, with NES = 1.40 and adjusted p-value = 1.04 × 10⁻⁶, as shown in Figure 9, indicating coordinated regulation of genes involved in carbohydrate metabolism across developmental stages.
 
 <div align="center">
