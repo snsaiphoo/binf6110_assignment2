@@ -3,11 +3,11 @@
 ## Introduction 
 _Saccharomyces cerevisiae_, commonly known as brewer’s yeast, plays a central role in the production of sherry-style wines [1]. During biological wine aging, specialized flor yeast strains form a floating biofilm layer, referred to as a velum, on the surface of fortified wine [1]. This allows the yeast to survive oxidative stress and high ethanol levels that occur during aging. Unlike fermentative yeast strains, which rely primarily on sugars for energy, flor yeast utilizes ethanol and glycerol as carbon sources under oxidative stress, playing a part in both survival and the biochemical characteristics of sherry wines [1].
 
-The dataset analyzed in this study is derived from a transcriptomic investigation of gene expression changes during a 71-day biological wine-aging process [1]. RNA-seq samples were collected at three distinct stages of velum development: Stage 1 (10 days, thin biofilm), Stage 2 (45 days, thin biofilm), and Stage 3 (71 days, mature biofilm). These stages reflect progressive biofilm maturation and physiological adaptation. Assessing gene expression changes across these time points helps identify regulatory mechanisms underlying stress responses, metabolic transitions, and biofilm structural development.
+The dataset analyzed in this study is derived from a transcriptomic investigation of gene expression changes during a 71-day biological wine-aging process [1]. RNA-seq samples were collected at three distinct stages of velum development: Stage 1 (10 days, early biofilm), Stage 2 (45 days, thin biofilm), and Stage 3 (71 days, mature biofilm). These stages reflect progressive biofilm maturation and physiological adaptation. Assessing gene expression changes across these time points helps identify regulatory mechanisms underlying stress responses, metabolic transitions, and biofilm structural development.
 
 Transcriptomic analysis provides a comprehensive overview of global gene activity and enables investigation of changes in gene expression patterns in response to environmental and physiological stressors [2]. In the context of flor yeast, discovering these transcriptional changes is important for identifying pathways that facilitate oxidative adaptation and prolonged survival during wine aging.
 
-The objective of this analysis is to evaluate differential gene expression across stages and identify biological processes and pathways associated with velum maturation. By using differential expression analysis with functional annotation, this analysis seeks to characterize the transcriptional mechanisms underlying flor yeast adaptation.
+The objective of this analysis is to evaluate differential gene expression across stages and identify biological processes and pathways associated with biofilm maturation. By integrating differential expression analysis with functional annotation, this study aims to interpret gene-level changes in a biological context and characterize the transcriptional mechanisms underlying flor yeast adaptation.
 
 ### Design Rationale 
 Quality control was performed using `FastQC` on raw RNA-seq reads [3] in accordance with established RNA-seq best-practice guidelines [4]. This was to assess per-base sequence quality, GC content distribution, adapter contamination, overrepresented sequences, and duplication levels prior to downstream analysis.
@@ -18,15 +18,17 @@ Because transcript isoforms often overlap, short RNA-seq reads may originate fro
 
 Differential expression analysis was performed using `DESeq2` [10]. This was selected over `edgeR` [11] and `limma-voom` [12] because it models count data using a negative binomial distribution, which is appropriate for RNA-seq data [10, 13], and performs internal normalization of raw counts, simplifying the workflow. Wald tests were used for pairwise stage comparisons, and likelihood ratio tests (LRTs) were used to detect genes with significant expression changes across multiple stages [10].
 
-To evaluate biological relevance, both over-representation analysis (ORA) and Gene Set Enrichment Analysis (GSEA) were conducted using `clusterProfiler` [14]. ORA identifies enriched Gene Ontology (GO) terms and KEGG pathways based on predefined lists of differentially expressed genes, whereas GSEA assesses enrichment across ranked gene lists without requiring an arbitrary cutoff, allowing detection of coordinated but subtle pathway-level changes [15]. While each statistical and enrichment method has limitations, such as including sensitivity to model assumptions and threshold selection, the combined use of complementary approaches strengthens confidence in the biological interpretation of flor yeast transcriptional regulation during biofilm maturation.
+To evaluate biological relevance, both over-representation analysis (ORA) and Gene Set Enrichment Analysis (GSEA) were performed using the `clusterProfile`r package [14]. ORA identifies enriched functional categories based on a predefined list of significantly differentially expressed genes, whereas GSEA evaluates enrichment across a ranked gene list without requiring a statistical cutoff, enabling detection of coordinated but moderate expression shifts [15]. Enrichment analyses were conducted against both Gene Ontology (GO) and KEGG pathway databases. GO analysis characterizes overrepresented biological processes, molecular functions, and cellular components, while KEGG analysis maps differentially expressed genes onto curated metabolic and signaling pathways. The combined use of complementary statistical approaches and annotation frameworks enhances the robustness and biological interpretability of transcriptional changes observed during flor yeast biofilm maturation.
 
 ## Methods 
+The following section describes methods for analyzing  _Saccharomyces cerevisiae_ RNA-seq data. To execute the pipeline, download the [`scripts`](scripts) directory into your workspace. The `.sh` scripts should first be run sequentially in a Linux terminal, beginning with `00_ `and proceeding in numerical order. These scripts perform preprocessing and quantification steps, and output directories will be generated automatically at each stage. Once quantification is complete, the resulting count or quant files should be imported into `R` for downstream analysis. 
+
 ### 1.0 - Data and Tools
 #### 1.1 - Containers
 All command-line software used in this analysis was executed using containerized environments for reproducibility and version control. Singularity was used to pull pre-built Docker images and convert them into `.sif` container files stored in a dedicated `containers/` directory. 
 
 #### 1.2 - R Environment (For Step 4.0)
-All analyses were performed in `R` using packages from `CRAN` and `Bioconductor`. `Bioconductor` packages included `tximport`, `DESeq2`, `GenomicFeatures`, `org.Sc.sgd.db`, `AnnotationDbi`, `DEGreport`, `apeglm`, `clusterProfiler`, `enrichplot`, and `DOSE` for analysis. Additional `CRAN` packages, including `tidyverse`, `here`, and `pheatmap`, were used for data manipulation and visualization. `Bioconductor` packages were installed using `BiocManager::install()`, and `CRAN` packages were installed using `install.packages()`.
+All required CRAN and Bioconductor dependencies can be installed by running the [`00_packages.R`](scripts/00_packages.R) script provided in this repository.
 
 #### 1.3 - Data Acquisition
 The Flor yeast samples were obtained from the NCBI Sequence Read Archive (SRA) and correspond to the yeast biofilm (velum) development study described in [1]. The _Saccharomyces cerevisiae_ samples were collected at three stages of biofilm formation during wine aging:
@@ -169,7 +171,7 @@ ORA was performed using significantly differentially expressed genes from the Wa
 For the LRT analysis, significant genes were clustered based on shared expression patterns (Section 5.2). ORA was then performed independently for each cluster in [`09_clusters.R`](scripts/09_clusters.R) to identify biological pathways.
 
 #### 6.2 - Gene Set Enrichment Analysis (GSEA): GO & KEGG
-GSEA was performed using ranked gene lists rather than applying a strict significance cutoff. For Wald results, genes were ranked by log2 fold change and analyzed using `gseGO()` and `gseKEGG()` in [`08_functional_analysis.R`](scripts/08_functional_analysis.R). For the LRT analysis, genes were ranked by the LRT test statistic, and GSEA was performed in [`09_clusters.R`](scripts/09_clusters.R) to identify pathways associated with overall stage-dependent expression changes. Enrichment results were visualized using dot plots and enrichment plots.
+GSEA was performed using ranked gene lists rather than applying a strict significance cutoff. For Wald results, genes were ranked by log2 fold change to preserve directionality of expression changes and analyzed using `gseGO()` and `gseKEGG()` in [`08_functional_analysis.R`](scripts/08_functional_analysis.R). For the LRT, genes were ranked by the LRT test statistic to assess overall stage-dependent expression changes across time. Because the LRT statistic does not encode directionality, this approach captures genes that change over time regardless of whether they are up- or downregulated. Enrichment results were visualized using dot plots and enrichment plots.
 
 # Results
 ### FastQC 
@@ -205,13 +207,26 @@ Transcript-level quantification was performed using Salmon against the _Saccharo
 The first visualization performed for the differential gene analysis was the principal component analysis (PCA) for the three stages. Figure 1 revealed clear clustering among the three developmental stages. PC1 accounted for 71% of the variance and separated Stage 1, while PC2 explained 24% and distinguished Stage 2 from Stage 3. Biological replicates clustered closely within each condition, demonstrating high reproducibility and minimal technical variation.
 
 #### Wald Test Visualizations 
-<div align="center">
-<img src="figures/Volcano_Stage_3%20vs%20Stage_1.png" width="600"/>
-   <br>
-<b>Figure 2.</b> Volcano plot of differential expression analysis (Wald test) comparing Stage 3 and Stage 1. Red points represent significantly upregulated genes, blue points represent significantly downregulated genes, and gray points indicate non-significant genes.
+<div align="center" style="display: flex; justify-content: center; gap: 20px;">
+
+  <img src="figures/Volcano_Stage_2%20vs%20Stage_1.png" width="300"/>
+  <img src="figures/Volcano_Stage_3%20vs%20Stage_1.png" width="300"/>
+  <img src="figures/Volcano_Stage_3%20vs%20Stage_2.png" width="300"/>
+
 </div>
+
 <br>
-The volcano plot comparing Stage 3 and Stage 1, shown in Figure 2, demonstrates transcriptional changes, with numerous genes significantly upregulated and downregulated. The significant genes are approximately symmetric around zero, indicating comparable numbers of genes exhibiting positive and negative log2fold changes. Several genes exhibit large fold changes and strong statistical significance.
+
+<div align="center">
+<b>Figure 2.</b> Volcano plots of differential gene expression analysis (DESeq2 Wald test) comparing transcriptional changes across developmental stages. 
+Left: Stage 2 vs Stage 1; Middle: Stage 3 vs Stage 1; Right: Stage 3 vs Stage 2. 
+The x-axis represents log2 fold change (log2FC), indicating magnitude and direction of differential expression, while the y-axis shows −log10 adjusted p-value, reflecting statistical significance. 
+Red points denote significantly upregulated genes (adjusted p-value < 0.05 and positive log2FC), blue points denote significantly downregulated genes (adjusted p-value < 0.05 and negative log2FC), and gray points represent non-significant genes. 
+An increasing spread of significant genes from Stage 1 to Stage 3 suggests progressive transcriptional remodeling during development.
+</div>
+   
+<br>
+The volcano plots in Figure 2 display differential gene expression for all pairwise comparisons (Stage 2 vs Stage 1, Stage 3 vs Stage 1, and Stage 3 vs Stage 2). Each comparison shows numerous significantly upregulated and downregulated genes distributed on both sides of zero, indicating differential expression in both directions. The Stage 3 vs Stage 1 contrast exhibits the greatest spread of log2 fold changes and −log10 adjusted p-values, while Stage 2 vs Stage 1 shows a more moderate distribution. The Stage 3 vs Stage 2 comparison demonstrates continued differential expression between the later stages, though with a narrower overall range than Stage 3 vs Stage 1.
 <br>
 <br/>
 
@@ -248,7 +263,7 @@ Heatmaps of the top 15 differentially expressed genes were generated for each pa
 <div align="center">
 <img src="figures/LRT.png" width="600"/>
 <br>
-<b>Figure 4.</b>Expression trajectories of LRT-significant genes clustered by similar temporal patterns across Stage 1, Stage 2, and Stage 3. Each panel represents a gene cluster, with individual gene profiles shown as lines and summarized by boxplots at each stage. Values are Z-scored expression levels to emphasize relative changes over time. The clusters illustrate distinct patterns, including decreasing, increasing, and stage-specific expression trends during biofilm development.
+<b>Figure 4.</b> Expression trajectories of LRT-significant genes clustered by similar temporal patterns across Stage 1, Stage 2, and Stage 3. Each panel represents a gene cluster, with individual gene profiles shown as lines and summarized by boxplots at each stage. Values are Z-scored expression levels to emphasize relative changes over time. The clusters illustrate distinct patterns, including decreasing, increasing, and stage-specific expression trends during biofilm development.
 </div>
 <br/>
 A likelihood ratio test (LRT) was performed to identify genes that change significantly across all three developmental stages. Significant genes were grouped based on similar expression patterns shown in Figure 4. Group 1 genes (n = 346) showed high expression in Stage 1 followed by decreased expression in later stages. Group 3 genes (n = 523) displayed the opposite trend, with low expression in Stage 1 and 2 and increased expression in Stage 3. Groups 2 (n = 51) and 4 (n = 80) showed peak expression in Stage 2 before decreasing. These trajectory patterns demonstrate clear stage-dependent transcriptional changes during biofilm development.
@@ -298,11 +313,11 @@ GO enrichment analysis was performed for genes within each LRT-defined expressio
 <br>
 <b>Figure 7.</b> GO Biological Process enrichment analysis of LRT-defined expression clusters. 
 (A) Cluster 1 genes, which exhibit highest mean expression in Stage 1, are enriched for early-stage metabolic processes. 
-(B) Cluster 3 genes, which show peak expression in Stage 3, are enriched for energy production and mitochondrial-associated processes. 
+(B) Cluster 3 genes, which show peak expression in Stage 3, review Figure 4, are enriched for energy production and mitochondrial-associated processes. 
 Dot size represents gene ratio and color indicates adjusted p-value (darker red = greater statistical significance).
 </div>
 <br/>
-Cluster 1 genes exhibited the highest mean expression in Stage 1, followed by decreased expression in later stages, consistent with early-stage dominance. GO enrichment analysis revealed significant associations with metabolic processes, including monocarboxylic acid metabolic process and purine-containing compound catabolic process, as shown in Figure 7A. In contrast, Figure 7B of Cluster 3 genes showed increasing expression across stages, peaking in Stage 3, indicating late-stage activation. These genes were enriched for processes such as carbohydrate metabolic process, generation of precursor metabolites and energy, energy derivation by oxidation of organic compounds, and mitochondrion organization. Together, these findings demonstrate distinct stage-dependent metabolic programs during biofilm development.
+Cluster 1 genes exhibited the highest mean expression in Stage 1 followed by decreased expression in later stages, consistent with early-stage dominance, as shown in Figure 4. GO enrichment analysis revealed significant associations with metabolic processes, including monocarboxylic acid metabolic process and purine-containing compound catabolic process, as shown in Figure 7A. In contrast, Cluster 3 genes displayed increasing expression across stages, reaching peak expression in Stage 3 as shown in Figure 4, indicating late-stage activation. These genes were enriched for processes such as carbohydrate metabolic process, generation of precursor metabolites and energy, energy derivation by oxidation of organic compounds, and mitochondrion organization, as shown in Figure 7B. Together, these findings demonstrate distinct stage-dependent metabolic programs during biofilm development.
 
 #### KEGG Enrichment of LRT Cluster 1 and 3
 
@@ -326,7 +341,7 @@ Cluster 1 genes exhibited the highest mean expression in Stage 1, followed by de
 Dot size represents gene count and color indicates adjusted p-value (darker red = greater statistical significance).
 </div>
 <br/>
-Cluster 1 genes, which exhibited highest mean expression in Stage 1 followed by progressive reduction across later stages, were enriched for metabolic pathways including biosynthesis of secondary metabolites, carbon metabolism, and glycolysis/gluconeogenesis, shown in Figure 8A. In contrast, Cluster 3 genes show increasing expression across developmental progression and peak in Stage 3, and were enriched for pathways such as oxidative phosphorylation, proteasome, and biosynthesis of secondary metabolites, shown in Figure 8B. These enrichments indicate enhanced energy production and protein turnover in later stages of biofilm development.
+Cluster 1 genes exhibited the highest mean expression in Stage 1 followed by progressive reduction across later stages, as shown in Figure 4, and were enriched for metabolic pathways including biosynthesis of secondary metabolites, carbon metabolism, and glycolysis/gluconeogenesis, as shown in Figure 8A. In contrast, Cluster 3 genes displayed increasing expression across developmental progression, reaching their highest mean expression in Stage 3, as shown in Figure 4, and were enriched for pathways such as oxidative phosphorylation, proteasome, and biosynthesis of secondary metabolites, as shown in Figure 8B. These enrichments indicate enhanced respiratory activity and protein turnover during later stages of biofilm development.
 
 #### GSEA Visualizations
 
@@ -336,8 +351,8 @@ Cluster 1 genes, which exhibited highest mean expression in Stage 1 followed by 
 <b>Figure 9.</b> GSEA enrichment profile for the GO term carbohydrate metabolic process based on LRT-ranked genes. The running enrichment score (green) rises sharply near the left side of the ranked gene list, reflecting the clustering of pathway genes (black ticks) among highly ranked genes with strong stage-dependent expression changes. This pattern indicates coordinated regulation of carbohydrate metabolism across biofilm development.
 <br/>
 </div>
-
-Gene Set Enrichment Analysis (GSEA) was performed using genes ranked by the LRT statistic to identify pathways exhibiting coordinated stage-dependent expression changes. The GO Biological Process term carbohydrate metabolic process showed significant positive enrichment, with NES = 1.40 and adjusted p-value = 1.04 × 10⁻⁶, as shown in Figure 9, indicating coordinated regulation of genes involved in carbohydrate metabolism across developmental stages.
+<br/>
+Gene Set Enrichment Analysis (GSEA) was performed using genes ranked by the LRT statistic to identify pathways exhibiting coordinated stage-dependent expression changes. The GO Biological Process term carbohydrate metabolic process showed significant positive enrichment, with an NES of 1.40 and an adjusted p-value of 1.04 × 10⁻⁶, as shown in Figure 9 and summarized in Table 2, indicating coordinated regulation of genes involved in carbohydrate metabolism across developmental stages.
 
 <div align="center">
 <img src="figures/GSEA_KEGG_LRT_top_pathway.png" width="600"/>
@@ -345,7 +360,7 @@ Gene Set Enrichment Analysis (GSEA) was performed using genes ranked by the LRT 
 <b>Figure 10.</b> GSEA enrichment profile for the KEGG pathway biosynthesis of secondary metabolites derived from LRT-ranked genes. The running enrichment score (green) increases sharply near the left side of the ranked gene list, reflecting the clustering of pathway genes (black ticks) among highly ranked genes with strong stage-dependent expression changes. This pattern indicates coordinated pathway-level regulation across biofilm development.
 </div>
 <br/>
-Similarly, KEGG pathway analysis identified secondary metabolite biosynthesis as the top-enriched pathway, with an NES = 1.38 and an adjusted p-value = 1.07 × 10⁻⁸, shown in Figure 10. These results reinforce the coordinated metabolic shifts observed in ORA analyses. These GSEA findings are consistent with overrepresentation analyses and further support stage-dependent metabolic remodeling.
+Similarly, KEGG pathway analysis identified biosynthesis of secondary metabolites as the top-enriched pathway, with an NES of 1.38 and an adjusted p-value of 1.07 × 10⁻⁸, as shown in Figure 10 and summarized in Table 2. These results reinforce the coordinated metabolic shifts observed in ORA analyses and further support stage-dependent metabolic remodeling.
 <br/>
 <br/>
 <div align="center">
@@ -356,7 +371,7 @@ Similarly, KEGG pathway analysis identified secondary metabolite biosynthesis as
 
 | Database | ID        | Description                              | NES  | Adjusted p-value | Top 10 Core Genes |
 |----------|-----------|------------------------------------------|------|------------------|-------------------|
-| GO       | GO:0005975 | carbohydrate metabolic process          | 1.40 | 1.04 × 10⁻⁶ | YEL070W, YJL052W, YNR071C, YKR097W, YNR073C, YCR012W, YMR145C, YHR174W, YMR105C, YOR047C |
+| GO       | GO:0005975 | Carbohydrate metabolic process          | 1.40 | 1.04 × 10⁻⁶ | YEL070W, YJL052W, YNR071C, YKR097W, YNR073C, YCR012W, YMR145C, YHR174W, YMR105C, YOR047C |
 | KEGG     | sce01110  | Biosynthesis of secondary metabolites    | 1.38 | 1.07 × 10⁻⁸ | YGR087C, YCR105W, YJL052W, YGR088W, YBR117C, YKR097W, YCR012W, YGR060W, YHR174W, YMR105C |
 
 
@@ -374,11 +389,14 @@ GO over-representation analysis of Cluster 1 showed enrichment for monocarboxyli
 In contrast, Cluster 3 was enriched for carbohydrate metabolic process, generation of precursor metabolites and energy, energy derivation by oxidation of organic compounds, and mitochondrion organization, as shown in Figure 7B, with KEGG pathways including oxidative phosphorylation and proteasome, as shown in Figure 8B. The progressive increase of these pathways supports enhanced respiratory metabolism and protein quality control during biofilm maturation [1, 24, 26], highlighting coordinated physiological adaptation across development.
 
 #### GSEA LRT 
-To further evaluate coordinated pathway-level regulation, GSEA was performed using genes ranked by LRT statistics. The top enriched GO pathway was carbohydrate metabolic process, as shown in Figure 9, with a normalized enrichment score of 1.40 and an adjusted p-value of 1.04 × 10⁻⁶. In Figure 9, the vertical black tick marks represent genes belonging to the carbohydrate metabolic process pathway, plotted according to their position in the ranked gene list. The noticeable clustering of these ticks toward the left side indicates that many of these genes are ranked highly based on their LRT statistics, meaning they show strong stage-dependent expression changes. This concentration produces the sharp rise in the green running enrichment score at the beginning of the plot and results in a positive enrichment score, reflecting coordinated regulation of this pathway across biofilm development.
+To further evaluate coordinated pathway-level regulation, GSEA was performed using genes ranked by LRT statistics. The top enriched GO process was the carbohydrate metabolic process, as shown in Figure 9, with a normalized enrichment score of 1.40 and an adjusted p-value of 1.04 × 10⁻⁶. In Figure 9, the vertical black tick marks represent genes belonging to the carbohydrate metabolic process pathway, plotted according to their position in the ranked gene list. The noticeable clustering of these ticks toward the left side indicates that many of these genes are ranked highly based on their LRT statistics, meaning they show strong stage-dependent expression changes. This concentration produces the sharp rise in the green running enrichment score at the beginning of the plot and results in a positive enrichment score, reflecting coordinated regulation of this pathway across biofilm development.
 
 KEGG GSEA identified biosynthesis of secondary metabolites as the most significantly enriched pathway, as shown in Figure 10, with a normalized enrichment score of 1.38 and an adjusted p-value of 1.07 × 10⁻⁸. Similar to Figure 9, the dense accumulation of black tick marks toward the left indicates that many genes within this pathway are highly ranked based on their LRT statistics, producing an early peak in the running enrichment score. Together, these patterns demonstrate that genes involved in carbohydrate and secondary metabolism are collectively and significantly regulated across biofilm development.
 
 These findings are also consistent with transcriptomic studies of _Saccharomyces cerevisiae_ biofilms, which report activation of carbohydrate metabolism during development [25]. Core enrichment genes such as YMR105C (PGM2) [27], which is involved in gluconeogenesis and trehalose biosynthesis during biofilm formation [25], and additional leading-edge genes, including YJL052W and YCR012W, contributed to multiple enriched pathways. This overlap indicates coordinated regulation of central metabolic processes rather than isolated gene-specific changes.
+
+#### Conclusion
+
 
 ## References
 [1] A. V. Mardanov, M. A. Eldarov, A. V. Beletsky, T. N. Tanashchuk, S. A. Kishkovskaya, and N. V. Ravin, “Transcriptome Profile of Yeast Strain Used for Biological Wine Aging Revealed Dynamic Changes of Gene Expression in Course of Flor Development,” Frontiers in Microbiology, vol. 11, Apr. 2020, doi: https://doi.org/10.3389/fmicb.2020.00538. <br/>
