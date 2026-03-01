@@ -344,6 +344,12 @@ Gene Set Enrichment Analysis (GSEA) was performed using genes ranked by the LRT 
 Similarly, KEGG pathway analysis identified secondary metabolite biosynthesis as the top-enriched pathway, with an NES = 1.38 and an adjusted p-value = 1.07 × 10⁻⁸, shown in Figure 10. These results reinforce the coordinated metabolic shifts observed in ORA analyses. These GSEA findings are consistent with overrepresentation analyses and further support stage-dependent metabolic remodeling.
 
 ## Discussion 
+The results display clear stage-dependent remodeling during biofilm development. The principal component analysis shown in Figure 1 distinctly separates the early, thin, and mature stages. These strong groupings reflect substantial restructuring of the transcriptional landscape across biofilm development. DGE results, shown in Figures 2 and 3, further supported this pattern, with many genes exhibiting opposing expression. Demonstrated by trends between Stage 1 and Stage 3 in the heatmaps. 
+
+Rather than isolated gene-level effects, these results suggest coordinated changes in groups of related genes as biofilms transition from early establishment to mature structure. The patterns seen at the gene level were consistently reflected in both ORA and GSEA functional enrichment analyses. They identified metabolic and energy-associated pathways as significantly enriched across stages, indicating that the transcriptional changes are coordinated and biologically meaningful rather than random variation.
+
+This kind of remodeling is consistent with previously reported metabolic reprogramming during microbial biofilm development [23]. In Saccharomyces cerevisiae, biofilm formation has been described as a multi-stage process involving initial surface adhesion followed by structural maturation [24]. This supports the interpretation that differences in gene expression across stages reflect an organized developmental progression.
+
 
 ## Conclusion 
 
@@ -370,6 +376,10 @@ Similarly, KEGG pathway analysis identified secondary metabolite biosynthesis as
 [20] “Salmon - Salmon 1.10.1 documentation,” salmon.readthedocs.io. https://salmon.readthedocs.io/en/latest/salmon.html <br/>
 [21] “makeTxDbFromGFF function - RDocumentation,” Rdocumentation.org, 2016. https://www.rdocumentation.org/packages/GenomicFeatures/versions/1.24.4/topics/makeTxDbFromGFF (accessed Feb. 28, 2026). <br/>
 [22] “Welcome To Zscaler Directory Authentication,” Github.io, 2025. https://hbctraining.github.io/DGE_workshop_salmon/lessons/08_DGE_LRT.html <br/>
+[23] T. Pisithkul et al., “Metabolic Remodeling during Biofilm Development of Bacillus subtilis,” mBio, vol. 10, no. 3, Jun. 2019, doi: https://doi.org/10.1128/mBio.00623-19. <br/>
+[24] Y. Jiang et al., “Cell Cycle Progression Influences Biofilm Formation in Saccharomyces cerevisiae 1308,” Microbiology Spectrum, vol. 10, no. 3, Jun. 2022, doi: https://doi.org/10.1128/spectrum.02765-21. <br/>
+
+
 
 
 
