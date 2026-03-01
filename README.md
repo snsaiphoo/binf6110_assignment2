@@ -100,9 +100,9 @@ All quant.sf files were stored in the [`salmon_output`](salmon_output) directory
 
 #### 4.1 - Gene Mapping
 
-To summarize transcript-level estimates to the gene level, a transcript-to-gene mapping table, tx2gene, was created using the _Saccharomyces cerevisiae S288C_ gene annotation file `genomic.gtf` [16].
+To summarize transcript-level estimates to the gene level, a transcript-to-gene mapping table, `tx2gene`, was created using the _Saccharomyces cerevisiae S288C_ gene annotation file `genomic.gtf` [16].
 
-A `TxDb` object was generated using `makeTxDbFromGFF()` from the `GenomicFeatures` package [21], which allowed transcript IDs, TXNAME, to be matched to their corresponding `GENEID`. Minor naming inconsistencies were resolved by removing transcript version numbers to ensure compatibility.
+A `TxDb` object was generated using `makeTxDbFromGFF()` from the `GenomicFeatures` package [21], which allowed transcript IDs, `TXNAME`, to be matched to their corresponding `GENEID`. Minor naming inconsistencies were resolved by removing transcript version numbers to ensure compatibility.
 
 #### 4.2 - Creating the DESeq2 object
 
@@ -344,12 +344,21 @@ Gene Set Enrichment Analysis (GSEA) was performed using genes ranked by the LRT 
 Similarly, KEGG pathway analysis identified secondary metabolite biosynthesis as the top-enriched pathway, with an NES = 1.38 and an adjusted p-value = 1.07 × 10⁻⁸, shown in Figure 10. These results reinforce the coordinated metabolic shifts observed in ORA analyses. These GSEA findings are consistent with overrepresentation analyses and further support stage-dependent metabolic remodeling.
 
 ## Discussion 
+#### Wald DGE and Enrichment
 The pairwise Wald test comparing Stage 3 and Stage 1 reflects the transition from an early biofilm layer to a mature structure. As shown in Figures 2 and 3, the large number of differentially expressed genes indicates substantial transcriptional reprogramming across developmental stages. Genes expressed at higher levels in Stage 3 relative to Stage 1 were significantly associated with mitochondrial organization and mitochondrial respiration, as shown in Figure 5. KEGG pathway analysis further showed enrichment of ribosome, proteasome, oxidative phosphorylation, and citrate cycle pathways in Stage 3, as shown in Figure 6. Together, these results suggest increased respiratory activity along with greater protein production and turnover in mature biofilms.
 
 In contrast, genes involved in glycolysis/gluconeogenesis, pyruvate metabolism, fatty acid metabolism, transmembrane transport, and organic acid metabolic processes were significantly downregulated in Stage 3 relative to Stage 1, as shown in Figures 5 and 6. This suggests that cells in the early stage of biofilm development rely more heavily on fermentative and central carbon metabolism to generate energy and support growth. This interpretation aligns with the known progression of flor yeast biofilm formation during sherry wine aging, where early growth transitions into a more respiration-dominated mature biofilm at the air–liquid interface [1]. 
 
 More broadly, similar metabolic shifts have been reported during microbial biofilm development [23]. In _Saccharomyces cerevisiae_, biofilm formation is described as a multi-stage process beginning with surface adhesion and progressing toward structural maturation, as described in [24], supporting the idea that the observed gene expression differences reflect an organized developmental program rather than random transcriptional variation. Carbohydrate metabolism, including glycolysis and gluconeogenesis, has also been identified as a key feature of early biofilm formation [25]. Additionally, proteomic studies of flor yeast biofilms have reported increased abundance of TCA cycle and respiratory proteins under biofilm-forming conditions compared to non-biofilm states [26], further supporting the interpretation that mature biofilms rely more heavily on oxidative metabolism. Together, these results indicate a coordinated shift in metabolic activity as biofilms progress from early growth to a mature structure.
 
+#### LRT DGE and Enrichment
+To complement the pairwise Wald comparisons, a likelihood ratio test (LRT) was performed to identify genes whose expression changed significantly across all developmental stages [22]. Clustering of LRT-significant genes revealed distinct temporal patterns, as shown in Figure 4, with Cluster 1 genes showing highest expression in Stage 1 followed by progressive reduction, and Cluster 3 genes increasing over time and peaking in Stage 3.
+
+GO over-representation analysis (ORA) of Cluster 1 revealed enrichment for monocarboxylic acid metabolic process and purine-containing compound catabolic process, as shown in Figure 7A. KEGG ORA further identified enrichment of biosynthesis of secondary metabolites, carbon metabolism, and glycolysis/gluconeogenesis, as shown in Figure 8A. These results indicate that early biofilm stages are characterized by active central carbon metabolism and nucleotide turnover, consistent with growth-associated metabolic activity [23, 25].
+
+In contrast, GO ORA of Cluster 3 showed enrichment for carbohydrate metabolic process, generation of precursor metabolites and energy, energy derivation by oxidation of organic compounds, and mitochondrion organization, as shown in Figure 7B. KEGG ORA additionally identified oxidative phosphorylation and proteasome pathways, as shown in Figure 8B. The increasing expression of these pathways over time suggests enhanced respiratory metabolism and protein turnover during biofilm maturation [1, 24, 26]. Together, the opposing trends of Cluster 1 and Cluster 3 support a coordinated, stage-dependent transcriptional program during biofilm development.
+
+#### GSEA LRT 
 
 ## Conclusion 
 
